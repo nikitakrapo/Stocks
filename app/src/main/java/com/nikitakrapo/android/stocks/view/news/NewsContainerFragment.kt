@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.news
+package com.nikitakrapo.android.stocks.view.news
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
