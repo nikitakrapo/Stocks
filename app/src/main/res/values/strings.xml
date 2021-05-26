@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Stocks</string>
+    <string name="cd_market">List</string>
+    <string name="title_market">Market</string>
+    <string name="cd_news">List</string>
+    <string name="title_news">News</string>
+    <string name="title_portfolio">Portfolio</string>
+    <string name="cd_list">List</string>
+    <string name="title_overview">Overview</string>
+    <string name="title_stocks">Stocks</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

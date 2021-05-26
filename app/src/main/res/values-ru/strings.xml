@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Stocks</string>
+    <string name="cd_market">Список</string>
+    <string name="title_market">Рынок</string>
+    <string name="cd_news">Список</string>
+    <string name="title_news">Новости</string>
+    <string name="title_portfolio">Портфель</string>
+    <string name="cd_list">Список</string>
+    <string name="title_overview">Обзор</string>
+    <string name="hello_blank_fragment">Привет пустой фрагмент</string>
+    <string name="title_stocks">Акции</string>
+</resources>
