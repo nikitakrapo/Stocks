@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.portfolio
+package com.nikitakrapo.android.stocks.view.portfolio
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.market
+package com.nikitakrapo.android.stocks.view.market
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

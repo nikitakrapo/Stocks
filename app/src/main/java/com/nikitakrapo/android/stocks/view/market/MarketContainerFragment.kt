@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.market
+package com.nikitakrapo.android.stocks.view.market
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -30,19 +30,19 @@ class MarketContainerFragment : Fragment() {
 
         tabLayout = binding.tabLayout
 
-        setTabNames()
+        initTabNames()
 
         TabLayoutMediator(tabLayout, viewPager) {tab, position ->
             tab.text = tabNames[position]
         }.attach()
 
         //TODO: add viewModel to remember last selected tab
-        viewPager.setCurrentItem(1, false)
+        //viewPager.setCurrentItem(1, false)
 
         return binding.root
     }
 
-    fun setTabNames(){
+    fun initTabNames(){
         tabNames = listOf(
             getString(R.string.title_overview),
             getString(R.string.title_stocks)
