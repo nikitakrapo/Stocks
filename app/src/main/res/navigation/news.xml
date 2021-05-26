@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/newsContainerFragment"
-        android:name="com.nikitakrapo.android.stocks.news.NewsContainerFragment"
+        android:name="com.nikitakrapo.android.stocks.view.news.NewsContainerFragment"
         android:label="@string/title_news"
         tools:layout="@layout/fragment_news_container" />
 </navigation>
