@@ -1,11 +1,23 @@
 package com.nikitakrapo.android.stocks.retrofit
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface FinnhubApiService {
+
+    enum class StockCandleResolution(val value: String){
+        @SerializedName("1") ONE_MINUTE("1"),
+        @SerializedName("5") FIVE_MINUTES("5"),
+        @SerializedName("15") FIFTEEN_MINUTES("15"),
+        @SerializedName("30") THIRTY_MINUTES("30"),
+        @SerializedName("60") SIXTY_MINUTES("60"),
+        @SerializedName("D") DAY("D"),
+        @SerializedName("W") WEEK("W"),
+        @SerializedName("M") MONTH("M")
+    }
 
     companion object{
         private const val BASE_URL = "https://finnhub.io/api/v1/"
@@ -19,8 +31,18 @@ interface FinnhubApiService {
     @GET("quote")
     fun getStockPrice(@Query("symbol") symbol: String): Deferred<StockPrice>
 
-    @GET("profile2/")
+    @GET("profile2")
     fun getCompanyProfile2(@Query("symbol") symbol: String): Deferred<CompanyProfile2>
+
+    @GET("search")
+    fun getSymbolLookup(@Query("q") q: String): Deferred<SymbolLookup>
+
+    @GET("stock/candle")
+    fun getStockCandle(@Query("symbol") symbol: String,
+                       @Query("resolution") resolution: StockCandleResolution,
+                       @Query("from") from: Long,
+                       @Query("to") to: Int
+    ): Call<StockCandle> //TODO: change to deferred
 
     /**
      * Represents a stock price response
@@ -32,12 +54,12 @@ interface FinnhubApiService {
      * @property t current time UNIX
      */
     data class StockPrice(
-        val o: Double,
-        val h: Double,
-        val l: Double,
-        val c: Double,
-        val pc: Double,
-        val t: Long)
+        val o: Double?,
+        val h: Double?,
+        val l: Double?,
+        val c: Double?,
+        val pc: Double?,
+        val t: Long?)
 
     /**
      * Represents a stock profile response
@@ -67,5 +89,45 @@ interface FinnhubApiService {
         val phone: String?,
         val weburl: String?,
         val finnhubIndustry: String?)
+
+    /**
+     * Represents a symbol lookup response
+     * @property count number of results
+     * @property result array of search results
+     */
+    data class SymbolLookup(val count: Int,
+                            val result: List<SingleLookupResponse>){
+        /**
+         * Represents an element in symbol lookup response
+         * DO NOT USE ANYWHERE FROM symbolLookup!!
+         * @property description symbol description
+         * @property displaySymbol display symbol name
+         * @property symbol unique symbol used to identify this symbol used in /stock/candle endpoint
+         * @property type security type
+         */
+        data class SingleLookupResponse(
+                val description: String?,
+                val displaySymbol: String?,
+                val symbol: String?,
+                val type: String?)
+    }
+
+    /**
+     * Represents a stock prices candle
+     * @property s status of the response. this field can either be ok or no_data
+     * @property o list of open prices for returned candles
+     * @property h list of open prices for returned candles
+     * @property l list of low prices for returned candles
+     * @property c list of close prices for returned candles
+     * @property v list of volume data for returned candles
+     * @property t list of timestamp for returned candles
+     */
+    data class StockCandle(val s: String,
+                           val o: List<Double>?,
+                           val h: List<Double>?,
+                           val l: List<Double>?,
+                           val c: List<Double>?,
+                           val v: List<Double>?,
+                           val t: List<Double>?)
 
 }

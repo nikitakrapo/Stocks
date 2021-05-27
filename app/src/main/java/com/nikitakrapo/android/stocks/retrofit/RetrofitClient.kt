@@ -10,7 +10,7 @@ object RetrofitClient {
     fun getClient(baseUrl: String): Retrofit {
         if (retrofit == null) {
 
-            // Interceptor that adds api key Header to the request
+            // Interceptor that adds api key to the request (...&token=*)
             val apiKeyInterceptor = ApiKeyInterceptor()
 
             val okHttpClient =
@@ -20,9 +20,10 @@ object RetrofitClient {
                     .build()
 
             retrofit = Retrofit.Builder()
-                .client(okHttpClient)
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(EnumConverterFactory())
+                .client(okHttpClient)
                 .build()
         }
         return retrofit!!

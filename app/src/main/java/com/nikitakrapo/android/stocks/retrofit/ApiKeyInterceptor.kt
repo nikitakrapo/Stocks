@@ -1,5 +1,6 @@
 package com.nikitakrapo.android.stocks.retrofit
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -7,16 +8,23 @@ import okhttp3.Response
 class ApiKeyInterceptor: Interceptor {
 
     companion object{
+        private const val TAG = "ApiKeyInterceptor"
         private const val API_KEY = "c0vnvnn48v6t383llfgg"
-        private const val API_KEY_NAME = "token"
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request: Request = chain.request()
-
-        val newRequest: Request = request.newBuilder()
-            .addHeader(API_KEY_NAME, API_KEY)
-            .build()
-        return chain.proceed(newRequest)
+        var original = chain.request()
+        val url =
+                original
+                        .url()
+                        .newBuilder()
+                        .addQueryParameter("token", API_KEY)
+                        .build()
+        original =
+                original
+                        .newBuilder()
+                        .url(url)
+                        .build()
+        return chain.proceed(original)
     }
 }
