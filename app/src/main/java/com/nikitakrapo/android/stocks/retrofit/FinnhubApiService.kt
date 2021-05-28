@@ -9,14 +9,33 @@ import retrofit2.http.Query
 interface FinnhubApiService {
 
     enum class StockCandleResolution(val value: String){
-        @SerializedName("1") ONE_MINUTE("1"),
-        @SerializedName("5") FIVE_MINUTES("5"),
-        @SerializedName("15") FIFTEEN_MINUTES("15"),
-        @SerializedName("30") THIRTY_MINUTES("30"),
-        @SerializedName("60") SIXTY_MINUTES("60"),
-        @SerializedName("D") DAY("D"),
-        @SerializedName("W") WEEK("W"),
-        @SerializedName("M") MONTH("M")
+        @SerializedName("1")
+        ONE_MINUTE("1"),
+        @SerializedName("5")
+        FIVE_MINUTES("5"),
+        @SerializedName("15")
+        FIFTEEN_MINUTES("15"),
+        @SerializedName("30")
+        THIRTY_MINUTES("30"),
+        @SerializedName("60")
+        SIXTY_MINUTES("60"),
+        @SerializedName("D")
+        DAY("D"),
+        @SerializedName("W")
+        WEEK("W"),
+        @SerializedName("M")
+        MONTH("M")
+    }
+
+    enum class MarketNewsCategory(val value: String){
+        @SerializedName("general")
+        GENERAL("general"),
+        @SerializedName("forex")
+        FOREX("forex"),
+        @SerializedName("crypto")
+        CRYPTO("crypto"),
+        @SerializedName("merger")
+        MERGER("merger")
     }
 
     companion object{
@@ -29,20 +48,39 @@ interface FinnhubApiService {
     }
 
     @GET("quote")
-    fun getStockPrice(@Query("symbol") symbol: String): Deferred<StockPrice>
+    fun getStockPrice(
+            @Query("symbol") symbol: String
+    ): Deferred<StockPrice>
 
     @GET("profile2")
-    fun getCompanyProfile2(@Query("symbol") symbol: String): Deferred<CompanyProfile2>
+    fun getCompanyProfile2(
+            @Query("symbol") symbol: String
+    ): Deferred<CompanyProfile2>
 
     @GET("search")
-    fun getSymbolLookup(@Query("q") q: String): Deferred<SymbolLookup>
+    fun getSymbolLookup(
+            @Query("q") q: String
+    ): Deferred<SymbolLookup>
 
     @GET("stock/candle")
-    fun getStockCandle(@Query("symbol") symbol: String,
-                       @Query("resolution") resolution: StockCandleResolution,
-                       @Query("from") from: Long,
-                       @Query("to") to: Int
+    fun getStockCandle(
+            @Query("symbol") symbol: String,
+            @Query("resolution") resolution: StockCandleResolution,
+            @Query("from") from: Long,
+            @Query("to") to: Int
     ): Call<StockCandle> //TODO: change to deferred
+
+    @GET("news")
+    fun getMarketNews(
+            @Query("category") category: MarketNewsCategory
+    ): Deferred<List<MarketNewsArticle>>
+
+    @GET("company-news")
+    fun getCompanyNews(
+            @Query("symbol") symbol: String,
+            @Query("from") fromYYYY_MM_DD: String,
+            @Query("to") toYYYY_MM_DD: String
+    ): Deferred<List<MarketNewsArticle>>
 
     /**
      * Represents a stock price response
@@ -129,5 +167,27 @@ interface FinnhubApiService {
                            val c: List<Double>?,
                            val v: List<Double>?,
                            val t: List<Double>?)
+
+    /**
+     * Represents a market news article
+     * @property category News category.
+     * @property datetime Published time in UNIX timestamp.
+     * @property headline News headline.
+     * @property id News ID. This value can be used for minId params to get the latest news only.
+     * @property image Thumbnail image URL.
+     * @property related Related stocks and companies mentioned in the article.
+     * @property source News source.
+     * @property summary News summary.
+     * @property url URL of the original article.
+     */
+    data class MarketNewsArticle(val category: String?,
+                                 val datetime: Long?,
+                                 val headline: String?,
+                                 val id: Int?,
+                                 val image: String?,
+                                 val related: String?,
+                                 val source: String?,
+                                 val summary: String?,
+                                 val url: String?)
 
 }
