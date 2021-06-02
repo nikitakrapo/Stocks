@@ -9,4 +9,6 @@
     <string name="title_overview">Overview</string>
     <string name="title_stocks">Stocks</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_general_news">General</string>
+    <string name="title_crypto_news">Crypto</string>
 </resources>

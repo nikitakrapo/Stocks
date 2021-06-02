@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/market">
+    app:startDestination="@id/marketContainerFragment">
 
-    <include app:graph="@navigation/market"/>
-    <include app:graph="@navigation/news"/>
-    <include app:graph="@navigation/portfolio"/>
+    <fragment
+        android:id="@+id/marketContainerFragment"
+        android:name="com.nikitakrapo.android.stocks.view.market.MarketContainerFragment"
+        android:label="@string/title_market"
+        tools:layout="@layout/fragment_market_container" />
+
+    <fragment
+        android:id="@+id/newsContainerFragment"
+        android:name="com.nikitakrapo.android.stocks.view.news.NewsContainerFragment"
+        android:label="@string/title_news"
+        tools:layout="@layout/fragment_news_container" />
+
+    <fragment
+        android:id="@+id/portfolioContainerFragment"
+        android:name="com.nikitakrapo.android.stocks.view.portfolio.PortfolioContainerFragment"
+        android:label="@string/title_portfolio"
+        tools:layout="@layout/fragment_portfolio_container" />
 
 </navigation>

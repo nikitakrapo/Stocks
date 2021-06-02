@@ -1,10 +1,7 @@
 package com.nikitakrapo.android.stocks.room
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.nikitakrapo.android.stocks.model.Stock
 import com.nikitakrapo.android.stocks.model.StockPortfolio
 
@@ -12,14 +9,20 @@ import com.nikitakrapo.android.stocks.model.StockPortfolio
 interface PortfolioDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addPortfolio(portfolio: StockPortfolio)
+    fun addPortfolio(portfolio: StockPortfolio)
 
     @Query("DELETE FROM stockportfolio WHERE name = :name")
     fun deletePortfolio(name: String)
 
+    @Query("SELECT * FROM stockportfolio WHERE name =:name")
+    fun getPortfolio(name: String): LiveData<StockPortfolio>
+
     @Query("SELECT * FROM stock WHERE symbol IN (:stockSymbols)")
-    suspend fun getStocks(
+    fun getStocks(
             stockSymbols: List<String>
-    ): LiveData<List<LiveData<Stock>>>
+    ): LiveData<List<Stock>>
+
+    @Query("DELETE FROM stockportfolio")
+    fun deleteAllPortfolios()
 
 }

@@ -3,6 +3,7 @@ package com.nikitakrapo.android.stocks.retrofit
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -50,17 +51,17 @@ interface FinnhubApiService {
     @GET("quote")
     fun getStockPrice(
             @Query("symbol") symbol: String
-    ): Deferred<StockPrice>
+    ): Call<StockPrice>
 
     @GET("profile2")
     fun getCompanyProfile2(
             @Query("symbol") symbol: String
-    ): Deferred<CompanyProfile2>
+    ): Call<CompanyProfile2>
 
     @GET("search")
     fun getSymbolLookup(
             @Query("q") q: String
-    ): Deferred<SymbolLookup>
+    ): Call<SymbolLookup>
 
     @GET("stock/candle")
     fun getStockCandle(
@@ -68,19 +69,19 @@ interface FinnhubApiService {
             @Query("resolution") resolution: StockCandleResolution,
             @Query("from") from: Long,
             @Query("to") to: Int
-    ): Call<StockCandle> //TODO: change to deferred
+    ): Call<StockCandle>
 
     @GET("news")
     fun getMarketNews(
             @Query("category") category: MarketNewsCategory
-    ): Deferred<List<MarketNewsArticle>>
+    ): Call<List<MarketNewsArticle>>
 
     @GET("company-news")
     fun getCompanyNews(
             @Query("symbol") symbol: String,
             @Query("from") fromYYYY_MM_DD: String,
             @Query("to") toYYYY_MM_DD: String
-    ): Deferred<List<MarketNewsArticle>>
+    ): Call<List<MarketNewsArticle>>
 
     /**
      * Represents a stock price response

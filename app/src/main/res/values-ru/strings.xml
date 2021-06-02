@@ -9,4 +9,6 @@
     <string name="title_overview">Обзор</string>
     <string name="hello_blank_fragment">Привет пустой фрагмент</string>
     <string name="title_stocks">Акции</string>
+    <string name="title_general_news">Главные</string>
+    <string name="title_crypto_news">Криптовалюты</string>
 </resources>

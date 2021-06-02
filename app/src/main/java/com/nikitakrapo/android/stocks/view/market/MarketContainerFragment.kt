@@ -1,6 +1,7 @@
 package com.nikitakrapo.android.stocks.view.market
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,22 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentMarketContainerBinding
+import com.nikitakrapo.android.stocks.databinding.FragmentMarketContainerBindingImpl
 
 class MarketContainerFragment : Fragment() {
+
+    companion object{
+        private const val TAG = "MarketContainerFragment"
+    }
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var tabNames: List<String>
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +46,6 @@ class MarketContainerFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) {tab, position ->
             tab.text = tabNames[position]
         }.attach()
-
-        //TODO: add viewModel to remember last selected tab
-        //viewPager.setCurrentItem(1, false)
 
         return binding.root
     }
