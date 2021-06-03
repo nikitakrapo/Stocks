@@ -3,6 +3,8 @@ package com.nikitakrapo.android.stocks.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -18,31 +20,54 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
+
+    private var currentNavController: LiveData<NavController>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val binding: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (savedInstanceState == null) {
+            setupBottomNavigationBar()
+        }
+    }
 
-        val navHostFragment = supportFragmentManager.findFragmentById(
-                R.id.nav_host_container
-        ) as NavHostFragment
-        navController = navHostFragment.navController
-        binding.bottomNav.setupWithNavController(navController)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        setupBottomNavigationBar()
+    }
 
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.marketContainerFragment, R.id.newsContainerFragment, R.id.portfolioContainerFragment)
+    private fun setupBottomNavigationBar(){
+        val bottomNavigationView = binding.bottomNav
+
+        val navGraphIds = listOf(
+                        R.navigation.market,
+                        R.navigation.news,
+                        R.navigation.portfolio
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        val controller = bottomNavigationView.setupWithNavController(
+                navGraphIds = navGraphIds,
+                fragmentManager = supportFragmentManager,
+                containerId = R.id.nav_host_container,
+                intent = intent
+        )
+
+        controller.observe(this, Observer { navController ->
+            setupActionBarWithNavController(navController)
+        })
+        currentNavController = controller
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
+        return currentNavController?.value?.navigateUp() ?: false
     }
 
-
+    override fun onBackPressed() {
+        if (currentNavController?.value?.popBackStack() != true) {
+            super.onBackPressed()
+        }
+    }
 }
