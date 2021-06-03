@@ -2,6 +2,7 @@ package com.nikitakrapo.android.stocks.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,6 +13,10 @@ import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    companion object{
+        private const val TAG = "MainActivity"
+    }
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -38,4 +43,6 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
     }
+
+
 }
