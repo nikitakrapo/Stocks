@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nikitakrapo.android.stocks.model.StockPortfolio
+import com.nikitakrapo.android.stocks.repository.PortfolioRepository
 import com.nikitakrapo.android.stocks.repository.StockRepository
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -23,13 +24,13 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 @RunWith(AndroidJUnit4::class)
-class DatabaseTest {
-    private lateinit var stockRepository: StockRepository
+class PortfolioDatabaseTest {
+    private lateinit var portfolioRepository: PortfolioRepository
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        stockRepository = StockRepository.getInstance(context)
+        portfolioRepository = PortfolioRepository.getInstance(context)
     }
 
     // Also testing converter list<String> <-> String (json)
@@ -41,11 +42,11 @@ class DatabaseTest {
                         "test",
                         listOf("AAPL", "BABA")
                 )
-        stockRepository.addPortfolio(portfolio)
-        var dbPortfolio = stockRepository.getPortfolio("test").getOrAwaitValue()
+        portfolioRepository.addPortfolio(portfolio)
+        var dbPortfolio = portfolioRepository.getPortfolio("test").getOrAwaitValue()
         assertThat(dbPortfolio, IsEqual.equalTo(portfolio))
-        stockRepository.deletePortfolio(dbPortfolio.name)
-        dbPortfolio = stockRepository.getPortfolio("test").getOrAwaitValue()
+        portfolioRepository.deletePortfolio(dbPortfolio.name)
+        dbPortfolio = portfolioRepository.getPortfolio("test").getOrAwaitValue()
         assertEquals(dbPortfolio, null)
     }
 
@@ -62,22 +63,22 @@ class DatabaseTest {
                         "test2",
                         listOf("AAPL11", "BABasdA")
                 )
-        stockRepository.addPortfolio(portfolio1)
-        stockRepository.addPortfolio(portfolio2)
-        var dbPortfolio1 = stockRepository.getPortfolio("test").getOrAwaitValue()
-        var dbPortfolio2 = stockRepository.getPortfolio("test2").getOrAwaitValue()
+        portfolioRepository.addPortfolio(portfolio1)
+        portfolioRepository.addPortfolio(portfolio2)
+        var dbPortfolio1 = portfolioRepository.getPortfolio("test").getOrAwaitValue()
+        var dbPortfolio2 = portfolioRepository.getPortfolio("test2").getOrAwaitValue()
         assertThat(dbPortfolio1, IsEqual.equalTo(portfolio1))
         assertThat(dbPortfolio2, IsEqual.equalTo(portfolio2))
-        stockRepository.deleteAllPortfolios()
-        dbPortfolio1 = stockRepository.getPortfolio("test").getOrAwaitValue()
-        dbPortfolio2 = stockRepository.getPortfolio("test2").getOrAwaitValue()
+        portfolioRepository.deleteAllPortfolios()
+        dbPortfolio1 = portfolioRepository.getPortfolio("test").getOrAwaitValue()
+        dbPortfolio2 = portfolioRepository.getPortfolio("test2").getOrAwaitValue()
         assertEquals(dbPortfolio1, null)
         assertEquals(dbPortfolio2, null)
     }
 
     @After
     fun clearDb() {
-        stockRepository.deleteAllPortfolios()
+        portfolioRepository.deleteAllPortfolios()
     }
 
     fun <T> LiveData<T>.getOrAwaitValue(
