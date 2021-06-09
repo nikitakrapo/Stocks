@@ -2,6 +2,7 @@ package com.nikitakrapo.android.stocks.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
@@ -10,42 +11,58 @@ import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 import com.nikitakrapo.android.stocks.model.NetworkResult
 import com.nikitakrapo.android.stocks.repository.StockRepository
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
+import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsCategory
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsArticle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GeneralNewsViewModel(
+class NewsViewModel(
         stockRepository: StockRepository
 ) : ViewModel() {
 
     private var stockRepository: StockRepository? = null
 
-    private val _generalNews = MediatorLiveData<NetworkResult<List<MarketNewsArticle>>>()
     private val _isRefreshing = MediatorLiveData<Boolean>()
 
-    val generalNews: LiveData<NetworkResult<List<MarketNewsArticle>>> get() = _generalNews
     val isRefreshing: LiveData<Boolean> get() = _isRefreshing
+
+    private val _news =
+        MarketNewsCategory.values().map{ marketNewsCategory ->
+            val mediatorLiveData = MediatorLiveData<NetworkResult<List<MarketNewsArticle>>>()
+            marketNewsCategory to mediatorLiveData
+        }.toMap()
+
+    val news =
+        MarketNewsCategory.values().map{ marketNewsCategory ->
+            val liveData: LiveData<NetworkResult<List<MarketNewsArticle>>> =
+                _news[marketNewsCategory] as LiveData<NetworkResult<List<MarketNewsArticle>>>
+            marketNewsCategory to liveData
+        }.toMap()
 
     init {
         this.stockRepository = stockRepository
     }
 
-    private var newsJob: Job? = null
+    private var jobs =
+        MarketNewsCategory.values().map { marketNewsCategory ->
+            marketNewsCategory to (null as Job?)
+        }.toMap().toMutableMap()
 
-    fun makeNewsCall() {
+    fun makeNewsCall(marketNewsCategory: MarketNewsCategory) {
         _isRefreshing.postValue(true)
-        newsJob = CoroutineScope(IO).launch {
+        jobs[marketNewsCategory] = CoroutineScope(IO).launch {
             val result =
-                    stockRepository!!.getMarketNews(FinnhubApiService.MarketNewsCategory.GENERAL)
-            _generalNews.postValue(result)
+                    stockRepository!!.getMarketNews(marketNewsCategory)
+            _news[marketNewsCategory]?.postValue(result)
             _isRefreshing.postValue(false)
         }
     }
 
     companion object {
+        private const val TAG = "NewsViewModel"
+
         @JvmStatic
         @BindingAdapter("imageUrl")
         fun loadImage(view: ImageView, profileImage: String) {
@@ -57,6 +74,7 @@ class GeneralNewsViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        newsJob?.cancel()
+        for (job in jobs)
+            job.value?.cancel()
     }
 }

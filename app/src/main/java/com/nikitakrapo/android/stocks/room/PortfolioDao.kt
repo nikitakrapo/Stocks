@@ -17,6 +17,9 @@ interface PortfolioDao {
     @Query("SELECT * FROM stockportfolio WHERE name =:name")
     fun getPortfolio(name: String): LiveData<StockPortfolio>
 
+    @Query("SELECT * FROM stockportfolio")
+    fun getPortfolios(): LiveData<List<StockPortfolio>>
+
     @Query("SELECT * FROM stock WHERE symbol IN (:stockSymbols)")
     fun getStocks(
             stockSymbols: List<String>

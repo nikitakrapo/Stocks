@@ -11,6 +11,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_general_news">General</string>
     <string name="title_crypto_news">Crypto</string>
+    <string name="title_forex_news">Forex</string>
 
     <string name="date_format" translatable="false">%1$tb %1$td, %1$tY</string>
 </resources>

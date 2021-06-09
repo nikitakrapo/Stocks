@@ -37,6 +37,10 @@ class PortfolioRepository private constructor(context: Context) {
         return stockMarketDatabase.portfolioDao().getPortfolio(name)
     }
 
+    fun getPortfolios(): LiveData<List<StockPortfolio>> {
+        return stockMarketDatabase.portfolioDao().getPortfolios()
+    }
+
     fun deletePortfolio(name: String){
         stockMarketDatabase.portfolioDao().deletePortfolio(name)
     }

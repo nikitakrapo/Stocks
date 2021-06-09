@@ -7,8 +7,12 @@
     <data>
 
         <variable
-            name="generalNewsViewModel"
-            type="com.nikitakrapo.android.stocks.viewmodel.GeneralNewsViewModel" />
+            name="marketNewsCategory"
+            type="com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsCategory" />
+
+        <variable
+            name="newsViewModel"
+            type="com.nikitakrapo.android.stocks.viewmodel.NewsViewModel" />
 
     </data>
 
@@ -16,13 +20,13 @@
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:refreshing="@{generalNewsViewModel.isRefreshing}"
-        app:onRefreshListener="@{() -> generalNewsViewModel.makeNewsCall()}">
+        app:refreshing="@{newsViewModel.isRefreshing}"
+        app:onRefreshListener="@{() -> newsViewModel.makeNewsCall(marketNewsCategory)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".view.news.GeneralNewsFragment">
+            tools:context=".view.news.NewsFragment">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
