@@ -8,7 +8,7 @@
 
         <variable
             name="marketNewsCategory"
-            type="com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsCategory" />
+            type="com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory" />
 
         <variable
             name="newsViewModel"

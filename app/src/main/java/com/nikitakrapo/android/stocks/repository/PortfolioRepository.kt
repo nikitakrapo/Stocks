@@ -2,14 +2,9 @@ package com.nikitakrapo.android.stocks.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.nikitakrapo.android.stocks.model.NetworkResult
-import com.nikitakrapo.android.stocks.model.Stock
 import com.nikitakrapo.android.stocks.model.StockPortfolio
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.StockPrice
 import com.nikitakrapo.android.stocks.room.StockMarketDatabase
-import retrofit2.await
-import java.io.IOException
 
 class PortfolioRepository private constructor(context: Context) {
 

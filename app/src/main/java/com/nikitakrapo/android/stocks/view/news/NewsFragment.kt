@@ -6,21 +6,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentNewsBinding
-import com.nikitakrapo.android.stocks.model.NetworkResult
+import com.nikitakrapo.android.stocks.model.Result
 import com.nikitakrapo.android.stocks.repository.StockRepository
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsCategory
+import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.utils.ConnectionLiveData
 import com.nikitakrapo.android.stocks.viewmodel.NewsViewModel
 import com.nikitakrapo.android.stocks.viewmodel.GeneralNewsViewModelFactory
 
 class NewsFragment : Fragment() {
+
+    private lateinit var connectionLiveData: ConnectionLiveData
     
     private val newsViewModel: NewsViewModel by viewModels{
         GeneralNewsViewModelFactory(
@@ -68,12 +69,23 @@ class NewsFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        connectionLiveData = ConnectionLiveData(requireContext())
+    }
+
     private fun observeNews(){
         newsViewModel.news[marketNewsCategory]?.observe(viewLifecycleOwner, Observer {
             when(it){
-                is NetworkResult.Error -> TODO()
-                is NetworkResult.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
+                is Result.Error -> TODO()
+                is Result.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
             }
+        })
+    }
+
+    private fun observeConnection(){
+        connectionLiveData.observe(viewLifecycleOwner, Observer { isNetworkAvailable ->
+            TODO()
         })
     }
 

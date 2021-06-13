@@ -1,18 +1,15 @@
 package com.nikitakrapo.android.stocks.viewmodel
 
-import android.app.Application
-import android.content.Context
-import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
-import com.nikitakrapo.android.stocks.model.NetworkResult
+import com.nikitakrapo.android.stocks.model.Result
+import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
 import com.nikitakrapo.android.stocks.repository.StockRepository
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsCategory
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsArticle
+import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
@@ -30,14 +27,14 @@ class NewsViewModel(
 
     private val _news =
         MarketNewsCategory.values().map{ marketNewsCategory ->
-            val mediatorLiveData = MediatorLiveData<NetworkResult<List<MarketNewsArticle>>>()
+            val mediatorLiveData = MediatorLiveData<Result<List<MarketNewsArticle>>>()
             marketNewsCategory to mediatorLiveData
         }.toMap()
 
     val news =
         MarketNewsCategory.values().map{ marketNewsCategory ->
-            val liveData: LiveData<NetworkResult<List<MarketNewsArticle>>> =
-                _news[marketNewsCategory] as LiveData<NetworkResult<List<MarketNewsArticle>>>
+            val liveData: LiveData<Result<List<MarketNewsArticle>>> =
+                _news[marketNewsCategory] as LiveData<Result<List<MarketNewsArticle>>>
             marketNewsCategory to liveData
         }.toMap()
 

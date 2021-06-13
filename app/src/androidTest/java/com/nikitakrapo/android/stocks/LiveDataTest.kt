@@ -4,9 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nikitakrapo.android.stocks.model.NetworkResult
+import com.nikitakrapo.android.stocks.model.Result
+import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
+import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
-import junit.framework.Assert
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,22 +24,22 @@ class LiveDataTest {
     @Test
     fun mapTest() {
         val _news =
-            FinnhubApiService.MarketNewsCategory.values().map { marketNewsCategory ->
+            MarketNewsCategory.values().map { marketNewsCategory ->
                 val mediatorLiveData =
-                    MediatorLiveData<NetworkResult<List<FinnhubApiService.MarketNewsArticle>>>()
+                    MediatorLiveData<Result<List<MarketNewsArticle>>>()
                 marketNewsCategory to mediatorLiveData
             }.toMap()
 
         val news =
-            FinnhubApiService.MarketNewsCategory.values().map { marketNewsCategory ->
-                val liveData: LiveData<NetworkResult<List<FinnhubApiService.MarketNewsArticle>>> =
-                    _news[marketNewsCategory] as LiveData<NetworkResult<List<FinnhubApiService.MarketNewsArticle>>>
+            MarketNewsCategory.values().map { marketNewsCategory ->
+                val liveData: LiveData<Result<List<MarketNewsArticle>>> =
+                    _news[marketNewsCategory] as LiveData<Result<List<MarketNewsArticle>>>
                 marketNewsCategory to liveData
             }.toMap()
 
-        val result = NetworkResult.Success(
+        val result = Result.Success(
             listOf(
-                FinnhubApiService.MarketNewsArticle(
+                MarketNewsArticle(
                     category = "general",
                     datetime = 0.toLong(),
                     headline = "headline",
@@ -52,10 +53,10 @@ class LiveDataTest {
             )
         )
 
-        _news[FinnhubApiService.MarketNewsCategory.GENERAL]!!.postValue(result)
+        _news[MarketNewsCategory.GENERAL]!!.postValue(result)
 
         assertEquals(
-            news[FinnhubApiService.MarketNewsCategory.GENERAL]?.getOrAwaitValue(),
+            news[MarketNewsCategory.GENERAL]?.getOrAwaitValue(),
             result
         )
     }

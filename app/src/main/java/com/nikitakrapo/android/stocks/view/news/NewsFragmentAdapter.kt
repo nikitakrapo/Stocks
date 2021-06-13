@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.nikitakrapo.android.stocks.R
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsCategory
+import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 
 class NewsFragmentAdapter(fragment: FragmentActivity) : FragmentStateAdapter(fragment) {
 

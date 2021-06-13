@@ -7,8 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nikitakrapo.android.stocks.model.Stock
 import com.nikitakrapo.android.stocks.model.StockPortfolio
+import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
 
-@Database(entities = [Stock::class, StockPortfolio::class], version = 1)
+@Database(entities = [Stock::class, StockPortfolio::class, MarketNewsArticle::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class StockMarketDatabase : RoomDatabase() {
     abstract fun stockDao(): StockDao

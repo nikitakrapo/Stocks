@@ -1,5 +1,6 @@
 package com.nikitakrapo.android.stocks
 
+import com.nikitakrapo.android.stocks.model.finnhub.enums.StockCandleResolution
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
 import junit.framework.Assert.assertEquals
 import org.junit.Before
@@ -22,7 +23,7 @@ class RetrofitTest {
     fun simpleRequest(){
         val call = remoteApi.getStockCandle(
                 "AAPL",
-                FinnhubApiService.StockCandleResolution.DAY,
+                StockCandleResolution.DAY,
                 1621911069,
                 1622101869)
 
@@ -37,7 +38,7 @@ class RetrofitTest {
     fun wrongTime(){
         val call = remoteApi.getStockCandle(
                 "AAPL",
-                FinnhubApiService.StockCandleResolution.DAY,
+                StockCandleResolution.DAY,
                 0,
                 0)
 
@@ -52,7 +53,7 @@ class RetrofitTest {
     fun wrongSymbol(){
         val call = remoteApi.getStockCandle(
                 "SASDOQJASDPASmnASDJi0o",
-                FinnhubApiService.StockCandleResolution.DAY,
+                StockCandleResolution.DAY,
                 1621911069,
                 1622101869)
 

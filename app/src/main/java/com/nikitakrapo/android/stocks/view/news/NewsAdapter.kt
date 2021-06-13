@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nikitakrapo.android.stocks.databinding.NewsArticleItemBinding
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsArticle
+import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
 
 class NewsAdapter :
         ListAdapter<MarketNewsArticle, NewsAdapter.NewsViewHolder>(DiffCallback()){

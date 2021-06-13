@@ -1,12 +1,11 @@
 package com.nikitakrapo.android.stocks.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import com.nikitakrapo.android.stocks.model.NetworkResult
-import com.nikitakrapo.android.stocks.model.StockPortfolio
+import com.nikitakrapo.android.stocks.model.Result
+import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
+import com.nikitakrapo.android.stocks.model.finnhub.StockPrice
+import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.MarketNewsArticle
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService.StockPrice
 import com.nikitakrapo.android.stocks.room.StockMarketDatabase
 import java.io.IOException
 
@@ -33,36 +32,36 @@ class StockRepository private constructor(context: Context) {
             errorMessage = "Error occurred"
     )
 
-    private suspend fun stockPriceFromApi(symbol: String): NetworkResult<StockPrice> {
+    private suspend fun stockPriceFromApi(symbol: String): Result<StockPrice> {
         val response = finnhubApiService.getStockPrice(symbol).execute()
         if (response.isSuccessful && response.body() != null) {
             if (response.body()?.t == 0L) { // Finnhub retrieves zeros in case of a wrong symbol
-                return NetworkResult.Error(IllegalArgumentException("Wrong symbol"))
+                return Result.Error(IllegalArgumentException("Wrong symbol"))
             }
-            return NetworkResult.Success(response.body()!!)
+            return Result.Success(response.body()!!)
         }
-        return NetworkResult.Error(Exception("Unsuccessful response"))
+        return Result.Error(Exception("Unsuccessful response"))
     }
 
-    suspend fun getMarketNews(newsCategory: FinnhubApiService.MarketNewsCategory) = safeApiCall(
+    suspend fun getMarketNews(newsCategory: MarketNewsCategory) = safeApiCall(
             call = { marketNews(newsCategory) },
             errorMessage = "Unknown exception"
     )
 
-    private suspend fun marketNews(newsCategory: FinnhubApiService.MarketNewsCategory): NetworkResult<List<MarketNewsArticle>>{
+    private suspend fun marketNews(newsCategory: MarketNewsCategory): Result<List<MarketNewsArticle>> {
         val response = finnhubApiService.getMarketNews(newsCategory).execute()
         if (response.isSuccessful && response.body() != null) {
             if (response.body()!!.isEmpty()) {
-                return NetworkResult.Error(Exception("No news"))
+                return Result.Error(Exception("No news"))
             }
-            return NetworkResult.Success(response.body()!!)
+            return Result.Success(response.body()!!)
         }
-        return NetworkResult.Error(Exception("Unsuccessful response\""))
+        return Result.Error(Exception("Unsuccessful response\""))
     }
 
-    suspend fun <T : Any> safeApiCall(call: suspend () -> NetworkResult<T>, errorMessage: String): NetworkResult<T> = try {
+    suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>, errorMessage: String): Result<T> = try {
         call.invoke()
     } catch (e: Exception) {
-        NetworkResult.Error(IOException(errorMessage, e))
+        Result.Error(IOException(errorMessage, e))
     }
 }
