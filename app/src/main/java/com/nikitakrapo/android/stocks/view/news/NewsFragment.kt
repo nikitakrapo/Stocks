@@ -15,6 +15,7 @@ import com.nikitakrapo.android.stocks.databinding.FragmentNewsBinding
 import com.nikitakrapo.android.stocks.model.Result
 import com.nikitakrapo.android.stocks.repository.StockRepository
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.repository.NewsRepository
 import com.nikitakrapo.android.stocks.utils.ConnectionLiveData
 import com.nikitakrapo.android.stocks.viewmodel.NewsViewModel
 import com.nikitakrapo.android.stocks.viewmodel.GeneralNewsViewModelFactory
@@ -25,7 +26,7 @@ class NewsFragment : Fragment() {
     
     private val newsViewModel: NewsViewModel by viewModels{
         GeneralNewsViewModelFactory(
-            StockRepository.getInstance(requireContext())
+            NewsRepository.getInstance(requireContext())
         )
     }
 
@@ -34,14 +35,19 @@ class NewsFragment : Fragment() {
     companion object{
         private const val TAG = "NewsFragment"
 
+        private const val MARKET_NEWS_CATEGORY_ARGS = "MARKET_NEWS_CATEGORY_ARGS"
+
         fun getInstance(marketNewsCategory: MarketNewsCategory): NewsFragment{
+            Log.d(TAG, "getInstance $marketNewsCategory")
             return NewsFragment().apply {
-                this.marketNewsCategory = marketNewsCategory
+                val args = Bundle()
+                args.putSerializable(MARKET_NEWS_CATEGORY_ARGS, marketNewsCategory)
+                arguments = args
             }
         }
     }
 
-    var marketNewsCategory: MarketNewsCategory? = null
+    private lateinit var marketNewsCategory: MarketNewsCategory
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -52,7 +58,11 @@ class NewsFragment : Fragment() {
                 inflater, R.layout.fragment_news, container, false
         )
 
+        marketNewsCategory =
+            requireArguments().getSerializable(MARKET_NEWS_CATEGORY_ARGS) as MarketNewsCategory
+
         binding.newsViewModel = newsViewModel
+        Log.d(TAG, marketNewsCategory.toString())
         binding.marketNewsCategory = marketNewsCategory
 
         recyclerView = binding.recyclerView
@@ -76,21 +86,17 @@ class NewsFragment : Fragment() {
 
     private fun observeNews(){
         newsViewModel.news[marketNewsCategory]?.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Result.Error -> TODO()
+            when (it) {
+                is Result.Error -> {
+                    TODO(it.exception.toString())
+                }
                 is Result.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
             }
         })
     }
 
-    private fun observeConnection(){
-        connectionLiveData.observe(viewLifecycleOwner, Observer { isNetworkAvailable ->
-            TODO()
-        })
-    }
-
     private fun makeNewsCall(){
-        marketNewsCategory?.let { newsViewModel.makeNewsCall(it) }
+        newsViewModel.makeNewsCall(marketNewsCategory)
     }
 
     override fun onDestroy() {

@@ -10,16 +10,17 @@ import com.nikitakrapo.android.stocks.model.Result
 import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
 import com.nikitakrapo.android.stocks.repository.StockRepository
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.repository.NewsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
-        stockRepository: StockRepository
+        newsRepository: NewsRepository
 ) : ViewModel() {
 
-    private var stockRepository: StockRepository? = null
+    private var newsRepository: NewsRepository? = null
 
     private val _isRefreshing = MediatorLiveData<Boolean>()
 
@@ -39,7 +40,7 @@ class NewsViewModel(
         }.toMap()
 
     init {
-        this.stockRepository = stockRepository
+        this.newsRepository = newsRepository
     }
 
     private var jobs =
@@ -51,7 +52,7 @@ class NewsViewModel(
         _isRefreshing.postValue(true)
         jobs[marketNewsCategory] = CoroutineScope(IO).launch {
             val result =
-                    stockRepository!!.getMarketNews(marketNewsCategory)
+                    newsRepository!!.getMarketNews(marketNewsCategory)
             _news[marketNewsCategory]?.postValue(result)
             _isRefreshing.postValue(false)
         }

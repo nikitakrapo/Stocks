@@ -16,5 +16,4 @@ interface StockDao {
     @Query("DELETE FROM stock WHERE symbol=:symbol")
     fun deleteStock(symbol: String)
 
-
 }

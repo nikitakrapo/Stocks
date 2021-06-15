@@ -13,6 +13,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.ActivityMainBinding
+import com.nikitakrapo.android.stocks.utils.ConnectionLiveData
+import com.nikitakrapo.android.stocks.view.news.NewsContainerFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,8 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var currentNavController: LiveData<NavController>? = null
-
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,33 +42,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigationBar(){
+        val navHostFragment = supportFragmentManager.findFragmentById(
+            R.id.nav_host_container
+        ) as NavHostFragment
+        navController = navHostFragment.navController
+
         val bottomNavigationView = binding.bottomNav
+        bottomNavigationView.setupWithNavController(navController)
 
-        val navGraphIds = listOf(
-                        R.navigation.market,
-                        R.navigation.news,
-                        R.navigation.portfolio
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.market, R.id.news, R.id.portfolio)
         )
 
-        val controller = bottomNavigationView.setupWithNavController(
-                navGraphIds = navGraphIds,
-                fragmentManager = supportFragmentManager,
-                containerId = R.id.nav_host_container,
-                intent = intent
-        )
-
-        controller.observe(this, Observer { navController ->
-            setupActionBarWithNavController(navController)
-        })
-        currentNavController = controller
+        val toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return currentNavController?.value?.navigateUp() ?: false
+        return navController.navigateUp(appBarConfiguration)
     }
 
     override fun onBackPressed() {
-        if (currentNavController?.value?.popBackStack() != true) {
+        if (!navController.popBackStack()) {
             super.onBackPressed()
         }
     }
