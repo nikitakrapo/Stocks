@@ -10,27 +10,29 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentNewsBinding
 import com.nikitakrapo.android.stocks.model.Result
-import com.nikitakrapo.android.stocks.repository.StockRepository
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.repository.NewsRepository
 import com.nikitakrapo.android.stocks.utils.ConnectionLiveData
 import com.nikitakrapo.android.stocks.viewmodel.NewsViewModel
-import com.nikitakrapo.android.stocks.viewmodel.GeneralNewsViewModelFactory
+import com.nikitakrapo.android.stocks.viewmodel.NewsViewModelFactory
 
 class NewsFragment : Fragment() {
 
     private lateinit var connectionLiveData: ConnectionLiveData
     
     private val newsViewModel: NewsViewModel by viewModels{
-        GeneralNewsViewModelFactory(
+        NewsViewModelFactory(
             NewsRepository.getInstance(requireContext())
         )
     }
 
     private lateinit var recyclerView: RecyclerView
+
+    private lateinit var binding: FragmentNewsBinding
 
     companion object{
         private const val TAG = "NewsFragment"
@@ -54,7 +56,7 @@ class NewsFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val binding: FragmentNewsBinding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_news, container, false
         )
 
@@ -88,11 +90,17 @@ class NewsFragment : Fragment() {
         newsViewModel.news[marketNewsCategory]?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Result.Error -> {
-                    TODO(it.exception.toString())
+                    showErrorSnackbar(it.exception) //TODO
                 }
                 is Result.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
             }
         })
+    }
+
+    private fun showErrorSnackbar(e: Exception){
+        val contextView = binding.recyclerView
+        Snackbar.make(contextView, e.localizedMessage ?: "Unknown exception", Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     private fun makeNewsCall(){

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.nikitakrapo.android.stocks.repository.NewsRepository
 import com.nikitakrapo.android.stocks.repository.StockRepository
 
-class GeneralNewsViewModelFactory( // TODO: maybe merge crypto and general news
+class NewsViewModelFactory( // TODO: maybe merge crypto and general news
         private val dataSource: NewsRepository
         ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
