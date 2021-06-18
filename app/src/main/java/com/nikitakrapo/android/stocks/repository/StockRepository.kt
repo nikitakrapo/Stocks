@@ -1,10 +1,8 @@
 package com.nikitakrapo.android.stocks.repository
 
 import android.content.Context
-import com.nikitakrapo.android.stocks.model.Result
-import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
+import com.nikitakrapo.android.stocks.model.NetworkResult
 import com.nikitakrapo.android.stocks.model.finnhub.StockPrice
-import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
 import com.nikitakrapo.android.stocks.room.StockMarketDatabase
 import java.io.IOException
@@ -32,20 +30,20 @@ class StockRepository private constructor(context: Context) {
             errorMessage = "Error occurred"
     )
 
-    private suspend fun stockPriceFromApi(symbol: String): Result<StockPrice> {
+    private suspend fun stockPriceFromApi(symbol: String): NetworkResult<StockPrice> {
         val response = finnhubApiService.getStockPrice(symbol).execute()
         if (response.isSuccessful && response.body() != null) {
             if (response.body()?.t == 0L) { // Finnhub retrieves zeros in case of a wrong symbol
-                return Result.Error(IllegalArgumentException("Wrong symbol"))
+                return NetworkResult.Error(IllegalArgumentException("Wrong symbol"))
             }
-            return Result.Success(response.body()!!)
+            return NetworkResult.Success(response.body()!!)
         }
-        return Result.Error(Exception("Unsuccessful response"))
+        return NetworkResult.Error(Exception("Unsuccessful response"))
     }
 
-    private suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>, errorMessage: String): Result<T> = try {
+    private suspend fun <T : Any> safeApiCall(call: suspend () -> NetworkResult<T>, errorMessage: String): NetworkResult<T> = try {
         call.invoke()
     } catch (e: Exception) {
-        Result.Error(IOException(errorMessage, e))
+        NetworkResult.Error(IOException(errorMessage, e))
     }
 }

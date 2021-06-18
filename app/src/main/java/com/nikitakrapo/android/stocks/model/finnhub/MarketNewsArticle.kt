@@ -20,7 +20,7 @@ data class MarketNewsArticle(val category: String?,
                              val datetime: Long?,
                              val headline: String?,
                              @PrimaryKey
-                             val id: Int?,
+                             val id: Int,
                              val image: String?,
                              val related: String?,
                              val source: String?,

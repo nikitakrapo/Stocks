@@ -15,4 +15,10 @@
 
     <string name="date_format" translatable="false">%1$tb %1$td, %1$tY</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="search">Search</string>
+
+    <string name="unknown_exception">Unknown exception</string>
+
+    <string name="too_many_requests">Too many requests</string>
+    <string name="unknown_host_exception">Unknown host</string>
 </resources>

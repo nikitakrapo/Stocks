@@ -40,6 +40,9 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
             .addCapability(NET_CAPABILITY_INTERNET)
             .build()
         cm.registerNetworkCallback(networkRequest, networkCallback)
+        val activeNetwork = cm.activeNetwork
+        if (activeNetwork == null)
+            checkValidNetworks()
     }
 
     override fun onInactive() {
@@ -53,23 +56,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onAvailable(android.net.Network)
          */
         override fun onAvailable(network: Network) {
-            Log.d(TAG, "onAvailable: ${network}")
-            val networkCapabilities = cm.getNetworkCapabilities(network)
-            val hasInternetCapability = networkCapabilities?.hasCapability(NET_CAPABILITY_INTERNET)
-            Log.d(TAG, "onAvailable: ${network}, $hasInternetCapability")
-            if (hasInternetCapability == true) {
-                // check if this network actually has internet
-                CoroutineScope(Dispatchers.IO).launch {
-                    val hasInternet = DoesNetworkHaveInternet.execute(network.socketFactory)
-                    if(hasInternet){
-                        withContext(Dispatchers.Main){
-                            Log.d(TAG, "onAvailable: adding network. ${network}")
-                            validNetworks.add(network)
-                            checkValidNetworks()
-                        }
-                    }
-                }
-            }
+            checkNetwork(network)
         }
 
         /*
@@ -82,6 +69,26 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
             checkValidNetworks()
         }
 
+    }
+
+    private fun checkNetwork(network: Network){
+        Log.d(TAG, "onAvailable: ${network}")
+        val networkCapabilities = cm.getNetworkCapabilities(network)
+        val hasInternetCapability = networkCapabilities?.hasCapability(NET_CAPABILITY_INTERNET)
+        Log.d(TAG, "onAvailable: ${network}, $hasInternetCapability")
+        if (hasInternetCapability == true) {
+            // check if this network actually has internet
+            CoroutineScope(Dispatchers.IO).launch {
+                val hasInternet = DoesNetworkHaveInternet.execute(network.socketFactory)
+                if(hasInternet){
+                    withContext(Dispatchers.Main){
+                        Log.d(TAG, "onAvailable: adding network. ${network}")
+                        validNetworks.add(network)
+                        checkValidNetworks()
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -8,22 +8,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentNewsBinding
-import com.nikitakrapo.android.stocks.model.Result
+import com.nikitakrapo.android.stocks.model.NetworkResult
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.repository.NewsRepository
 import com.nikitakrapo.android.stocks.utils.ConnectionLiveData
+import com.nikitakrapo.android.stocks.utils.ErrorTextUtils
 import com.nikitakrapo.android.stocks.viewmodel.NewsViewModel
 import com.nikitakrapo.android.stocks.viewmodel.NewsViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 class NewsFragment : Fragment() {
-
     private lateinit var connectionLiveData: ConnectionLiveData
-    
+
+    private var connectionLiveDataInitialized = false
+
     private val newsViewModel: NewsViewModel by viewModels{
         NewsViewModelFactory(
             NewsRepository.getInstance(requireContext())
@@ -40,7 +49,6 @@ class NewsFragment : Fragment() {
         private const val MARKET_NEWS_CATEGORY_ARGS = "MARKET_NEWS_CATEGORY_ARGS"
 
         fun getInstance(marketNewsCategory: MarketNewsCategory): NewsFragment{
-            Log.d(TAG, "getInstance $marketNewsCategory")
             return NewsFragment().apply {
                 val args = Bundle()
                 args.putSerializable(MARKET_NEWS_CATEGORY_ARGS, marketNewsCategory)
@@ -59,12 +67,16 @@ class NewsFragment : Fragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_news, container, false
         )
-
         marketNewsCategory =
             requireArguments().getSerializable(MARKET_NEWS_CATEGORY_ARGS) as MarketNewsCategory
 
+        binding.lifecycleOwner = this
+        binding.swipeRefresh.isRefreshing = true
+
+        connectionLiveData = ConnectionLiveData(requireContext())
+
         binding.newsViewModel = newsViewModel
-        Log.d(TAG, marketNewsCategory.toString())
+        binding.connectionLiveData = connectionLiveData
         binding.marketNewsCategory = marketNewsCategory
 
         recyclerView = binding.recyclerView
@@ -72,43 +84,41 @@ class NewsFragment : Fragment() {
         val adapter = NewsAdapter()
         recyclerView.adapter = adapter
 
-        binding.lifecycleOwner = this
-
-        makeNewsCall()
-
         observeNews()
+        observeConnectionLiveData()
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        connectionLiveData = ConnectionLiveData(requireContext())
+    private fun observeConnectionLiveData(){
+        connectionLiveData.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "$it")
+            /*  Wait for connectionLiveData initialization,
+            then, based on whether there is an Internet connection or not,
+            take data through the ViewModel either from the network or from the database */
+            if (!connectionLiveDataInitialized) {
+                newsViewModel.refreshNews(marketNewsCategory, it)
+                connectionLiveDataInitialized = true
+            }
+        })
     }
 
     private fun observeNews(){
         newsViewModel.news[marketNewsCategory]?.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Result.Error -> {
-                    showErrorSnackbar(it.exception) //TODO
-                }
-                is Result.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
+                is NetworkResult.Error -> showShortSnackbar(
+                        ErrorTextUtils.getErrorSnackBarText(
+                            it, requireContext()
+                        )
+                    )
+                is NetworkResult.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
             }
         })
     }
 
-    private fun showErrorSnackbar(e: Exception){
+    private fun showShortSnackbar(text: String){
         val contextView = binding.recyclerView
-        Snackbar.make(contextView, e.localizedMessage ?: "Unknown exception", Snackbar.LENGTH_SHORT)
+        Snackbar.make(contextView, text, Snackbar.LENGTH_SHORT)
             .show()
-    }
-
-    private fun makeNewsCall(){
-        newsViewModel.makeNewsCall(marketNewsCategory)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy")
     }
 }

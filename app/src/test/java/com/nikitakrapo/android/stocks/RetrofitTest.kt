@@ -3,6 +3,7 @@ package com.nikitakrapo.android.stocks
 import com.nikitakrapo.android.stocks.model.finnhub.enums.StockCandleResolution
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
 import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.*
 import org.junit.Before
 import org.junit.Test
 
@@ -20,18 +21,10 @@ class RetrofitTest {
     }
 
     @Test
-    fun simpleRequest(){
-        val call = remoteApi.getStockCandle(
-                "AAPL",
-                StockCandleResolution.DAY,
-                1621911069,
-                1622101869)
-
+    fun tooManyRequests(){
+        val call = remoteApi.getStockPrice("AAPL")
         val response = call.execute()
-        if (response.code() == TOO_MANY_REQUESTS){
-            throw Exception("Too many requests")
-        }
-        assertEquals("ok", response.body()?.s)
+        val isSuccessful = response.isSuccessful
     }
 
     @Test

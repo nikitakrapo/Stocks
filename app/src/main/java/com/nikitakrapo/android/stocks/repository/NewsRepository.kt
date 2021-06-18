@@ -1,9 +1,10 @@
 package com.nikitakrapo.android.stocks.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import com.nikitakrapo.android.stocks.model.Result
+import com.nikitakrapo.android.stocks.model.HttpStatusCode
+import com.nikitakrapo.android.stocks.model.NetworkResult
 import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
+import com.nikitakrapo.android.stocks.model.finnhub.NewsArticleWithCategory
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
 import com.nikitakrapo.android.stocks.room.StockMarketDatabase
@@ -27,41 +28,61 @@ class NewsRepository private constructor(context: Context){
         }
     }
 
-    fun addNewsArticle(marketNewsArticle: MarketNewsArticle){
-        stockMarketDatabase.newsDao().addNewsArticle(marketNewsArticle)
+    fun addNews(marketNewsArticle: MarketNewsArticle, marketNewsCategory: MarketNewsCategory){
+        stockMarketDatabase.newsDao().addNews(marketNewsArticle)
+        stockMarketDatabase.newsCategoriesDao().addNewsArticleWithCategory(
+            NewsArticleWithCategory(marketNewsArticle.id, marketNewsCategory.value)
+        )
     }
 
-    fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): LiveData<List<MarketNewsArticle>>{
-        return stockMarketDatabase.newsDao().getNewsByCategory(marketNewsCategory)
+    fun addNews(marketNewsArticles: List<MarketNewsArticle>, marketNewsCategory: MarketNewsCategory){
+        stockMarketDatabase.newsDao().addNews(marketNewsArticles)
+        stockMarketDatabase.newsCategoriesDao()
+            .addNewsArticleWithCategory(
+                marketNewsArticles.map {
+                    NewsArticleWithCategory(it.id, marketNewsCategory.value)
+                }.toList())
+    }
+
+    fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): List<MarketNewsArticle>{
+        val ids = stockMarketDatabase.newsCategoriesDao().getIdsByCategory(marketNewsCategory)
+        return stockMarketDatabase.newsDao().getNewsByIdsOrdered(ids)
     }
 
     fun deleteAllNews(){
         stockMarketDatabase.newsDao().deleteAllNews()
+        stockMarketDatabase.newsCategoriesDao().deleteAllNewsArticleWithCategories()
     }
 
-    fun getAllNews(): LiveData<List<MarketNewsArticle>>{
-        return stockMarketDatabase.newsDao().getAllNews()
+    fun replaceNews(marketNewsArticles: List<MarketNewsArticle>, marketNewsCategory: MarketNewsCategory){
+        val ids = stockMarketDatabase.newsCategoriesDao().getIdsByCategory(marketNewsCategory)
+        stockMarketDatabase.newsDao().deleteNewsByIds(ids)
+        stockMarketDatabase.newsCategoriesDao().deleteByCategory(marketNewsCategory)
+        addNews(marketNewsArticles, marketNewsCategory)
     }
 
     suspend fun getMarketNews(newsCategory: MarketNewsCategory) = safeApiCall(
         call = { marketNews(newsCategory) }
     )
 
-    private suspend fun marketNews(newsCategory: MarketNewsCategory): Result<List<MarketNewsArticle>> {
-        val response = finnhubApiService.getMarketNews(newsCategory).execute()
+    private fun marketNews(marketNewsCategory: MarketNewsCategory): NetworkResult<List<MarketNewsArticle>> {
+        val response = finnhubApiService.getMarketNews(marketNewsCategory).execute()
         if (response.isSuccessful && response.body() != null) {
-            if (response.body()!!.isEmpty()) {
-                return Result.Error(Exception("No news"))
-            }
-            return Result.Success(response.body()!!)
+            if (response.body()!!.isEmpty())
+                return NetworkResult.Error(Exception("No news"))
+            replaceNews(response.body()!!, marketNewsCategory)
+            return NetworkResult.Success(response.body()!!)
         }
-        return Result.Error(Exception("Unsuccessful response\""))
+        return NetworkResult.Error(
+            Exception("Unsuccessful Response"),
+            HttpStatusCode.fromInt(response.code()) ?: HttpStatusCode.Unknown
+        )
     }
 
-    private suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>): Result<T> = try {
+    private suspend fun <T : Any> safeApiCall(call: suspend () -> NetworkResult<T>): NetworkResult<T> = try {
         call.invoke()
     } catch (e: Exception) {
-        Result.Error(IOException(e))
+        NetworkResult.Error(IOException(e))
     }
 
 }

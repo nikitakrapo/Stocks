@@ -1,13 +1,14 @@
 package com.nikitakrapo.android.stocks.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nikitakrapo.android.stocks.repository.NewsRepository
 import com.nikitakrapo.android.stocks.repository.StockRepository
 
-class NewsViewModelFactory( // TODO: maybe merge crypto and general news
+class NewsViewModelFactory(
         private val dataSource: NewsRepository
-        ) : ViewModelProvider.Factory {
+    ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {

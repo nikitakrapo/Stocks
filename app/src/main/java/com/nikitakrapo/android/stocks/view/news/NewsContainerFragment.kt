@@ -45,11 +45,7 @@ class NewsContainerFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        val connectionLiveData = ConnectionLiveData(requireContext())
-        connectionLiveData.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "$it")
-            binding.noInternetBanner.visibility = if (it) View.GONE else View.VISIBLE
-        })
+        observeConnection()
 
         initTabNames()
 
@@ -58,6 +54,14 @@ class NewsContainerFragment : Fragment() {
         }.attach()
 
         return binding.root
+    }
+
+    private fun observeConnection(){
+        val connectionLiveData = ConnectionLiveData(requireContext())
+        connectionLiveData.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "$it")
+            binding.noInternetBanner.visibility = if (it) View.GONE else View.VISIBLE
+        })
     }
 
     private fun initTabNames(){

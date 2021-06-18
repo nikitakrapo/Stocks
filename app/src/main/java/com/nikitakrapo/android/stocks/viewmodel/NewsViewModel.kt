@@ -1,41 +1,46 @@
 package com.nikitakrapo.android.stocks.viewmodel
 
+import android.app.Application
+import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
-import com.nikitakrapo.android.stocks.model.Result
+import com.nikitakrapo.android.stocks.model.NetworkResult
 import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
-import com.nikitakrapo.android.stocks.repository.StockRepository
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.repository.NewsRepository
-import kotlinx.coroutines.CoroutineScope
+import com.nikitakrapo.android.stocks.utils.ConnectionLiveData
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 class NewsViewModel(
         newsRepository: NewsRepository
 ) : ViewModel() {
 
+    var hasConnection: Boolean = false
+
     private var newsRepository: NewsRepository? = null
 
     private val _isRefreshing = MediatorLiveData<Boolean>()
-
     val isRefreshing: LiveData<Boolean> get() = _isRefreshing
 
     private val _news =
         MarketNewsCategory.values().map{ marketNewsCategory ->
-            val mediatorLiveData = MediatorLiveData<Result<List<MarketNewsArticle>>>()
+            val mediatorLiveData = MediatorLiveData<NetworkResult<List<MarketNewsArticle>>>()
             marketNewsCategory to mediatorLiveData
         }.toMap()
 
     val news =
         MarketNewsCategory.values().map{ marketNewsCategory ->
-            val liveData: LiveData<Result<List<MarketNewsArticle>>> =
-                _news[marketNewsCategory] as LiveData<Result<List<MarketNewsArticle>>>
+            val liveData: LiveData<NetworkResult<List<MarketNewsArticle>>> =
+                _news[marketNewsCategory] as LiveData<NetworkResult<List<MarketNewsArticle>>>
             marketNewsCategory to liveData
         }.toMap()
 
@@ -48,11 +53,32 @@ class NewsViewModel(
             marketNewsCategory to (null as Job?)
         }.toMap().toMutableMap()
 
-    fun makeNewsCall(marketNewsCategory: MarketNewsCategory) {
+    fun refreshNews(marketNewsCategory: MarketNewsCategory, hasConnection: Boolean) {
+        if (hasConnection)
+            makeNewsCall(marketNewsCategory)
+        else
+            getNewsFromDb(marketNewsCategory)
+        Log.d(
+            TAG,
+            "hasConnection: $hasConnection)"
+        )
+    }
+
+    private fun getNewsFromDb(marketNewsCategory: MarketNewsCategory) {
         _isRefreshing.postValue(true)
         jobs[marketNewsCategory] = CoroutineScope(IO).launch {
             val result =
-                    newsRepository!!.getMarketNews(marketNewsCategory)
+                newsRepository!!.getNewsByCategory(marketNewsCategory)
+            _news[marketNewsCategory]?.postValue(NetworkResult.Success(result))
+            _isRefreshing.postValue(false)
+        }
+    }
+
+    private fun makeNewsCall(marketNewsCategory: MarketNewsCategory){
+        _isRefreshing.postValue(true)
+        jobs[marketNewsCategory] = CoroutineScope(IO).launch {
+            val result =
+                newsRepository!!.getMarketNews(marketNewsCategory)
             _news[marketNewsCategory]?.postValue(result)
             _isRefreshing.postValue(false)
         }
@@ -63,9 +89,9 @@ class NewsViewModel(
 
         @JvmStatic
         @BindingAdapter("imageUrl")
-        fun loadImage(view: ImageView, profileImage: String) {
+        fun loadImage(view: ImageView, articleImageUrl: String) {
             Glide.with(view.context)
-                    .load(profileImage)
+                    .load(articleImageUrl)
                     .into(view)
         }
     }

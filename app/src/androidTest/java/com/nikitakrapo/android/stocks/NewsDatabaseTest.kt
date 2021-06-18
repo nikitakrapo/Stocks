@@ -31,60 +31,6 @@ class NewsDatabaseTest {
         newsRepository = NewsRepository.getInstance(context)
     }
 
-    @Test
-    fun getNewsByCategoryTest(){
-        val generalArticles = listOf(
-            MarketNewsArticle(MarketNewsCategory.GENERAL.value,
-                1000000,
-                "Headline",
-                1,
-                "", "", "", "", ""),
-            MarketNewsArticle(MarketNewsCategory.GENERAL.value,
-                1002000,
-                "Headline",
-                3,
-                "", "", "", "", ""),
-            MarketNewsArticle(MarketNewsCategory.GENERAL.value,
-                2000000,
-                "Headline",
-                2,
-                "", "", "", "", "")
-        )
-
-        val cryptoArticles = listOf(
-            MarketNewsArticle(MarketNewsCategory.CRYPTO.value,
-                100240,
-                "Headline",
-                6,
-                "", "", "", "", ""),
-            MarketNewsArticle(MarketNewsCategory.CRYPTO.value,
-                10052000,
-                "Headline",
-                8,
-                "", "", "", "", ""),
-            MarketNewsArticle(MarketNewsCategory.CRYPTO.value,
-                22130000,
-                "Headline",
-                102,
-                "", "", "", "", "")
-        )
-
-        val allArticles = generalArticles + cryptoArticles
-
-        for (article in allArticles){
-            newsRepository.addNewsArticle(article)
-        }
-
-        val actualGeneralArticles =
-            newsRepository.getNewsByCategory(MarketNewsCategory.GENERAL).getOrAwaitValue()
-
-        val actualCryptoArticles =
-            newsRepository.getNewsByCategory(MarketNewsCategory.CRYPTO).getOrAwaitValue()
-
-        assertEquals(generalArticles.sortedByDescending { it.datetime }, actualGeneralArticles)
-        assertEquals(cryptoArticles.sortedByDescending { it.datetime }, actualCryptoArticles)
-    }
-
     @After
     fun clearDb(){
         newsRepository.deleteAllNews()

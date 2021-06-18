@@ -12,21 +12,20 @@ import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addNewsArticle(marketNewsArticle: MarketNewsArticle)
+    fun addNews(marketNewsArticle: MarketNewsArticle)
 
-    /**
-     * @return certain category's sorted news (new -> old)
-     */
-    @Query("SELECT * FROM marketnewsarticle WHERE category = :marketNewsCategory ORDER BY datetime DESC")
-    fun getNewsByCategory(marketNewsCategory: String): LiveData<List<MarketNewsArticle>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addNews(marketNewsArticles: List<MarketNewsArticle>)
 
-    fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): LiveData<List<MarketNewsArticle>>{
-        return getNewsByCategory(marketNewsCategory.value)
-    }
+    @Query("SELECT * FROM marketnewsarticle WHERE id IN (:ids) ORDER BY datetime DESC")
+    fun getNewsByIdsOrdered(ids: List<Int>): List<MarketNewsArticle>
 
     @Query("DELETE FROM marketnewsarticle")
     fun deleteAllNews()
 
+    @Query("DELETE FROM marketnewsarticle WHERE id IN (:ids)")
+    fun deleteNewsByIds(ids: List<Int>)
+
     @Query("SELECT * FROM marketnewsarticle")
-    fun getAllNews(): LiveData<List<MarketNewsArticle>>
+    fun getAllNews(): List<MarketNewsArticle>
 }
