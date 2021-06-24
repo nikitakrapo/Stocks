@@ -14,7 +14,7 @@ interface FinnhubApiService {
         val finnhubApiService: FinnhubApiService
             get() =
                 RetrofitClient
-                    .getClient(BASE_URL)
+                    .getFinnhubClient(BASE_URL)
                     .create(FinnhubApiService::class.java)
     }
 

@@ -33,7 +33,7 @@ class NewsFragment : Fragment() {
 
     private var connectionLiveDataInitialized = false
 
-    private val newsViewModel: NewsViewModel by viewModels{
+    private val newsViewModel: NewsViewModel by viewModels {
         NewsViewModelFactory(
             NewsRepository.getInstance(requireContext())
         )
@@ -43,29 +43,15 @@ class NewsFragment : Fragment() {
 
     private lateinit var binding: FragmentNewsBinding
 
-    companion object{
-        private const val TAG = "NewsFragment"
-
-        private const val MARKET_NEWS_CATEGORY_ARGS = "MARKET_NEWS_CATEGORY_ARGS"
-
-        fun getInstance(marketNewsCategory: MarketNewsCategory): NewsFragment{
-            return NewsFragment().apply {
-                val args = Bundle()
-                args.putSerializable(MARKET_NEWS_CATEGORY_ARGS, marketNewsCategory)
-                arguments = args
-            }
-        }
-    }
-
     private lateinit var marketNewsCategory: MarketNewsCategory
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_news, container, false
+            inflater, R.layout.fragment_news, container, false
         )
         marketNewsCategory =
             requireArguments().getSerializable(MARKET_NEWS_CATEGORY_ARGS) as MarketNewsCategory
@@ -90,35 +76,57 @@ class NewsFragment : Fragment() {
         return binding.root
     }
 
-    private fun observeConnectionLiveData(){
-        connectionLiveData.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "$it")
+    private fun observeConnectionLiveData() {
+        connectionLiveData.observe(viewLifecycleOwner, Observer { hasConnection ->
+            Log.d(TAG, "$hasConnection")
             /*  Wait for connectionLiveData initialization,
             then, based on whether there is an Internet connection or not,
             take data through the ViewModel either from the network or from the database */
             if (!connectionLiveDataInitialized) {
-                newsViewModel.refreshNews(marketNewsCategory, it)
+                newsViewModel.refreshNews(marketNewsCategory, hasConnection)
                 connectionLiveDataInitialized = true
+            } else {
+                // Update news when connection obtained
+                if (hasConnection)
+                    newsViewModel.refreshNews(marketNewsCategory, hasConnection)
             }
         })
     }
 
-    private fun observeNews(){
+    private fun observeNews() {
         newsViewModel.news[marketNewsCategory]?.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is NetworkResult.Error -> showShortSnackbar(
+                is NetworkResult.Error ->
+                    showShortSnackbar(
                         ErrorTextUtils.getErrorSnackBarText(
                             it, requireContext()
                         )
                     )
-                is NetworkResult.Success -> (recyclerView.adapter as NewsAdapter).submitList(it.data)
+                is NetworkResult.Success -> {
+                    (recyclerView.adapter as NewsAdapter).submitList(it.data)
+                }
             }
+
         })
     }
 
-    private fun showShortSnackbar(text: String){
+    private fun showShortSnackbar(text: String) {
         val contextView = binding.recyclerView
         Snackbar.make(contextView, text, Snackbar.LENGTH_SHORT)
             .show()
+    }
+
+    companion object {
+        private const val TAG = "NewsFragment"
+
+        private const val MARKET_NEWS_CATEGORY_ARGS = "MARKET_NEWS_CATEGORY_ARGS"
+
+        fun getInstance(marketNewsCategory: MarketNewsCategory): NewsFragment {
+            return NewsFragment().apply {
+                val args = Bundle()
+                args.putSerializable(MARKET_NEWS_CATEGORY_ARGS, marketNewsCategory)
+                arguments = args
+            }
+        }
     }
 }

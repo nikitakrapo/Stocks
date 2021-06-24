@@ -2,6 +2,7 @@ package com.nikitakrapo.android.stocks.model.finnhub
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 /**
  * Represents a market news article
@@ -16,13 +17,13 @@ import androidx.room.PrimaryKey
  * @property url URL of the original article.
  */
 @Entity
-data class MarketNewsArticle(val category: String?,
-                             val datetime: Long?,
-                             val headline: String?,
+data class MarketNewsArticle(val category: String,
+                             val datetime: Long,
+                             val headline: String,
                              @PrimaryKey
                              val id: Int,
-                             val image: String?,
-                             val related: String?,
-                             val source: String?,
-                             val summary: String?,
-                             val url: String?)
+                             val image: String,
+                             val related: String,
+                             val source: String,
+                             val summary: String,
+                             val url: String) : Serializable

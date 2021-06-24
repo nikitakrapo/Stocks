@@ -15,8 +15,8 @@ data class SymbolLookup(val count: Int,
      * @property type security type
      */
     data class SingleSymbolLookup(
-        val description: String?,
-        val displaySymbol: String?,
-        val symbol: String?,
-        val type: String?)
+        val description: String,
+        val displaySymbol: String,
+        val symbol: String,
+        val type: String)
 }

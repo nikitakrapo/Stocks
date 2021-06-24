@@ -17,4 +17,13 @@
     <string name="too_many_requests">Слишком много запросов</string>
     <string name="unknown_exception">Неизвестная ошибка</string>
     <string name="unknown_host_exception">Неизвестный хост</string>
+    <string name="saved_content">Сохранённый контент</string>
+    <string name="connection_restored">Соединение восстановлено</string>
+    <string name="hint_stock_search">Тикер акции</string>
+    <string name="cd_article_image">Картинка новости</string>
+    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="add_portfolio">Добавить портфель</string>
+    <string name="portfolio_name">Название портфеля</string>
+    <string name="add">Добавить</string>
+    <string name="news_article">Новость</string>
 </resources>

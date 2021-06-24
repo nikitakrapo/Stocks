@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="date_format" translatable="false">%1$tb %1$td, %1$tY</string>
+</resources>

@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 so i decided to make separate DB with correspondences (MarketNewsArticle -> MarketNewsCategory)
 */
 @Entity
-data class NewsArticleWithCategory(
+data class NewsArticleCategory(
     @PrimaryKey
     val id: Int,
-    val category: String?
+    val category: String
 )

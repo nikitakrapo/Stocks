@@ -21,12 +21,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 class NewsViewModel(
-        newsRepository: NewsRepository
+        private val newsRepository: NewsRepository
 ) : ViewModel() {
-
-    var hasConnection: Boolean = false
-
-    private var newsRepository: NewsRepository? = null
 
     private val _isRefreshing = MediatorLiveData<Boolean>()
     val isRefreshing: LiveData<Boolean> get() = _isRefreshing
@@ -43,10 +39,6 @@ class NewsViewModel(
                 _news[marketNewsCategory] as LiveData<NetworkResult<List<MarketNewsArticle>>>
             marketNewsCategory to liveData
         }.toMap()
-
-    init {
-        this.newsRepository = newsRepository
-    }
 
     private var jobs =
         MarketNewsCategory.values().map { marketNewsCategory ->
@@ -68,7 +60,7 @@ class NewsViewModel(
         _isRefreshing.postValue(true)
         jobs[marketNewsCategory] = CoroutineScope(IO).launch {
             val result =
-                newsRepository!!.getNewsByCategory(marketNewsCategory)
+                newsRepository.getNewsByCategory(marketNewsCategory)
             _news[marketNewsCategory]?.postValue(NetworkResult.Success(result))
             _isRefreshing.postValue(false)
         }
@@ -78,7 +70,7 @@ class NewsViewModel(
         _isRefreshing.postValue(true)
         jobs[marketNewsCategory] = CoroutineScope(IO).launch {
             val result =
-                newsRepository!!.getMarketNews(marketNewsCategory)
+                newsRepository.getMarketNews(marketNewsCategory)
             _news[marketNewsCategory]?.postValue(result)
             _isRefreshing.postValue(false)
         }

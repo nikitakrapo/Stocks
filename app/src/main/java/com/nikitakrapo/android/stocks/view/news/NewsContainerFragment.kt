@@ -28,7 +28,6 @@ class NewsContainerFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-    private lateinit var tabNames: List<String>
     private lateinit var binding: FragmentNewsContainerBinding
 
     override fun onCreateView(
@@ -47,10 +46,8 @@ class NewsContainerFragment : Fragment() {
 
         observeConnection()
 
-        initTabNames()
-
         TabLayoutMediator(tabLayout, viewPager) {tab, position ->
-            tab.text = tabNames[position]
+            tab.text = (viewPager.adapter as NewsFragmentAdapter).getTabNameAt(position)
         }.attach()
 
         return binding.root
@@ -60,14 +57,7 @@ class NewsContainerFragment : Fragment() {
         val connectionLiveData = ConnectionLiveData(requireContext())
         connectionLiveData.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "$it")
-            binding.noInternetBanner.visibility = if (it) View.GONE else View.VISIBLE
+            binding.savedContentBanner.visibility = if (it) View.GONE else View.VISIBLE
         })
-    }
-
-    private fun initTabNames(){
-        tabNames =
-            (viewPager.adapter as NewsFragmentAdapter).getTabNamesResourceIds().map{ stringResId ->
-                getString(stringResId)
-            }
     }
 }

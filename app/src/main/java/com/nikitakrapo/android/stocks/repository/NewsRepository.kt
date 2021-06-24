@@ -4,7 +4,7 @@ import android.content.Context
 import com.nikitakrapo.android.stocks.model.HttpStatusCode
 import com.nikitakrapo.android.stocks.model.NetworkResult
 import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
-import com.nikitakrapo.android.stocks.model.finnhub.NewsArticleWithCategory
+import com.nikitakrapo.android.stocks.model.finnhub.NewsArticleCategory
 import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
 import com.nikitakrapo.android.stocks.room.StockMarketDatabase
@@ -31,7 +31,7 @@ class NewsRepository private constructor(context: Context){
     fun addNews(marketNewsArticle: MarketNewsArticle, marketNewsCategory: MarketNewsCategory){
         stockMarketDatabase.newsDao().addNews(marketNewsArticle)
         stockMarketDatabase.newsCategoriesDao().addNewsArticleWithCategory(
-            NewsArticleWithCategory(marketNewsArticle.id, marketNewsCategory.value)
+            NewsArticleCategory(marketNewsArticle.id, marketNewsCategory.value)
         )
     }
 
@@ -40,7 +40,7 @@ class NewsRepository private constructor(context: Context){
         stockMarketDatabase.newsCategoriesDao()
             .addNewsArticleWithCategory(
                 marketNewsArticles.map {
-                    NewsArticleWithCategory(it.id, marketNewsCategory.value)
+                    NewsArticleCategory(it.id, marketNewsCategory.value)
                 }.toList())
     }
 

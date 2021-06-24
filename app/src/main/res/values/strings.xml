@@ -12,13 +12,18 @@
     <string name="title_general_news">General</string>
     <string name="title_crypto_news">Crypto</string>
     <string name="title_forex_news">Forex</string>
-
-    <string name="date_format" translatable="false">%1$tb %1$td, %1$tY</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="search">Search</string>
-
     <string name="unknown_exception">Unknown exception</string>
-
     <string name="too_many_requests">Too many requests</string>
     <string name="unknown_host_exception">Unknown host</string>
+    <string name="saved_content">Saved content</string>
+    <string name="connection_restored">Connection restored</string>
+    <string name="hint_stock_search">Stock symbol</string>
+    <string name="cd_article_image">Article image</string>
+    <string name="open_in_browser">Open in browser</string>
+    <string name="add_portfolio">Add portfolio</string>
+    <string name="portfolio_name">Portfolio name</string>
+    <string name="add">Add</string>
+    <string name="news_article">News article</string>
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shared_news_article_image" translatable="false">shared_news_article_image</string>
+    <string name="shared_news_article_headline" translatable="false">shared_news_article_headline</string>
+</resources>

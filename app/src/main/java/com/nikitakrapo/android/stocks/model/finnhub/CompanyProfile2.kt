@@ -1,5 +1,8 @@
 package com.nikitakrapo.android.stocks.model.finnhub
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 /**
  * Represents a stock profile response
  * @property country country of company's headquarter
@@ -15,16 +18,18 @@ package com.nikitakrapo.android.stocks.model.finnhub
  * @property weburl company website
  * @property finnhubIndustry finnhub industry classification
  */
+@Entity
 data class CompanyProfile2(
-    val country: String?,
-    val currency: String?,
-    val exchange: String?,
-    val name: String?,
-    val ticker: String?,
-    val ipo: String?,
-    val marketCapitalization: Double?,
-    val shareOutstanding: Double?,
-    val logo: String?,
-    val phone: String?,
-    val weburl: String?,
-    val finnhubIndustry: String?)
+    val country: String,
+    val currency: String,
+    val exchange: String,
+    val name: String,
+    @PrimaryKey
+    val ticker: String,
+    val ipo: String,
+    val marketCapitalization: Double,
+    val shareOutstanding: Double,
+    val logo: String,
+    val phone: String,
+    val weburl: String,
+    val finnhubIndustry: String)

@@ -2,6 +2,7 @@ package com.nikitakrapo.android.stocks.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 /**
  * Represents a stock portfolio.
@@ -13,4 +14,4 @@ data class StockPortfolio(
         @PrimaryKey
         val name: String,
         val portfolioStocks: List<String>
-        )
+        ) : Serializable

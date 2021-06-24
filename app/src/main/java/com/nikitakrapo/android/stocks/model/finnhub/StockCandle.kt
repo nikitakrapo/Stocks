@@ -11,9 +11,9 @@ package com.nikitakrapo.android.stocks.model.finnhub
  * @property t list of timestamp for returned candles
  */
 data class StockCandle(val s: String,
-                       val o: List<Double>?,
-                       val h: List<Double>?,
-                       val l: List<Double>?,
-                       val c: List<Double>?,
-                       val v: List<Double>?,
-                       val t: List<Double>?)
+                       val o: List<Double>,
+                       val h: List<Double>,
+                       val l: List<Double>,
+                       val c: List<Double>,
+                       val v: List<Double>,
+                       val t: List<Double>)

@@ -8,22 +8,38 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentPortfolioBinding
+import com.nikitakrapo.android.stocks.model.StockPortfolio
+import com.nikitakrapo.android.stocks.view.news.NewsFragment
 
 class PortfolioFragment : Fragment() {
 
     companion object{
-        fun getInstance(portfolioName: String): PortfolioFragment{
-            return PortfolioFragment().also { it.portfolioName = portfolioName }
+
+        private const val TAG = "PortfolioFragment"
+
+        private const val PORTFOLIO_FRAGMENT_PORTFOLIO = "PORTFOLIO_FRAGMENT_PORTFOLIO"
+
+        fun getInstance(stockPortfolio: StockPortfolio): PortfolioFragment{
+            return PortfolioFragment().apply {
+                val args = Bundle()
+                args.putSerializable(PORTFOLIO_FRAGMENT_PORTFOLIO, stockPortfolio)
+                arguments = args
+            }
         }
     }
 
-    var portfolioName: String? = null
+    private lateinit var stockPortfolio: StockPortfolio
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<FragmentPortfolioBinding>(
             inflater, R.layout.fragment_portfolio, container, false
         )
+
+        stockPortfolio =
+            requireArguments().getSerializable(PORTFOLIO_FRAGMENT_PORTFOLIO) as StockPortfolio
+
+        binding.stockPortfolio = stockPortfolio
 
         return binding.root
     }
