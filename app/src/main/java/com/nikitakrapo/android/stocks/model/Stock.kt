@@ -2,6 +2,7 @@ package com.nikitakrapo.android.stocks.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.nikitakrapo.android.stocks.model.finnhub.CompanyProfile2
 
 /**
  * Represents a market stock.
@@ -12,7 +13,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class Stock(
         @PrimaryKey
-        var symbol: String,
+        val symbol: String,
         var price: Double,
-        var currency: Currency
+        var currency: Currency,
         )
