@@ -78,14 +78,6 @@ class NewsViewModel(
 
     companion object {
         private const val TAG = "NewsViewModel"
-
-        @JvmStatic
-        @BindingAdapter("imageUrl")
-        fun loadImage(view: ImageView, articleImageUrl: String) {
-            Glide.with(view.context)
-                    .load(articleImageUrl)
-                    .into(view)
-        }
     }
 
     override fun onCleared() {
