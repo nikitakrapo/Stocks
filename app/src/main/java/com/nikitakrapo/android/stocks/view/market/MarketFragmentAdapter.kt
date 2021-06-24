@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 class MarketFragmentAdapter(fragment: FragmentActivity): FragmentStateAdapter(fragment) {
 
     private val fragments = listOf(
-        MarketOverviewFragment(),
+        MarketPopularFragment(),
         MarketStocksFragment()
     )
 
