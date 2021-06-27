@@ -5,9 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nikitakrapo.android.stocks.model.StockPortfolio
+import com.nikitakrapo.android.stocks.domain.model.StockPortfolio
 import com.nikitakrapo.android.stocks.repository.PortfolioRepository
-import com.nikitakrapo.android.stocks.repository.StockRepository
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -22,26 +21,23 @@ import org.junit.Before
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 class PortfolioDatabaseTest {
-    private lateinit var portfolioRepository: PortfolioRepository
 
-    @Before
-    fun createDb() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        portfolioRepository = PortfolioRepository.getInstance(context)
-    }
+    @Inject
+    private lateinit var portfolioRepository: PortfolioRepository
 
     // Also testing converter list<String> <-> String (json)
     @Test
     @Throws(Exception::class)
     fun addAndDeletePortfolio() {
-        val portfolio: StockPortfolio =
-                StockPortfolio(
-                        "test",
-                        listOf("AAPL", "BABA")
-                )
+        val portfolio =
+            StockPortfolio(
+                "test",
+                mutableListOf("AAPL", "BABA")
+            )
         portfolioRepository.addPortfolio(portfolio)
         var dbPortfolio = portfolioRepository.getPortfolio("test").getOrAwaitValue()
         assertThat(dbPortfolio, IsEqual.equalTo(portfolio))
@@ -53,16 +49,16 @@ class PortfolioDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun deleteAllPortfolios() {
-        val portfolio1: StockPortfolio =
-                StockPortfolio(
-                        "test",
-                        listOf("AAPL", "BABA")
-                )
-        val portfolio2: StockPortfolio =
-                StockPortfolio(
-                        "test2",
-                        listOf("AAPL11", "BABasdA")
-                )
+        val portfolio1 =
+            StockPortfolio(
+                "test",
+                mutableListOf("AAPL", "BABA")
+            )
+        val portfolio2 =
+            StockPortfolio(
+                "test2",
+                mutableListOf("AAPL11", "BABasdA")
+            )
         portfolioRepository.addPortfolio(portfolio1)
         portfolioRepository.addPortfolio(portfolio2)
         var dbPortfolio1 = portfolioRepository.getPortfolio("test").getOrAwaitValue()
@@ -82,8 +78,8 @@ class PortfolioDatabaseTest {
     }
 
     fun <T> LiveData<T>.getOrAwaitValue(
-            time: Long = 2,
-            timeUnit: TimeUnit = TimeUnit.SECONDS
+        time: Long = 2,
+        timeUnit: TimeUnit = TimeUnit.SECONDS
     ): T {
         var data: T? = null
         val latch = CountDownLatch(1)

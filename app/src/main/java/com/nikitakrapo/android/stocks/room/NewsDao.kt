@@ -1,12 +1,10 @@
 package com.nikitakrapo.android.stocks.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
-import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.network.response.MarketNewsArticle
 
 @Dao
 interface NewsDao {

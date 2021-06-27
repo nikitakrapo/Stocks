@@ -6,13 +6,13 @@
     <data>
         <variable
             name="searchViewModel"
-            type="com.nikitakrapo.android.stocks.viewmodel.SearchViewModel" />
+            type="com.nikitakrapo.android.stocks.presentation.ui.search.SearchViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.search.SearchActivity">
+        tools:context=".presentation.ui.search.SearchActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"

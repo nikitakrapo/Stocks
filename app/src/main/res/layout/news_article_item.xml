@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="article"
-            type="com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle" />
+            type="com.nikitakrapo.android.stocks.network.response.MarketNewsArticle" />
 
     </data>
 

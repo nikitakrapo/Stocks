@@ -1,63 +1,58 @@
 package com.nikitakrapo.android.stocks.repository
 
-import android.content.Context
-import com.nikitakrapo.android.stocks.model.HttpStatusCode
-import com.nikitakrapo.android.stocks.model.NetworkResult
-import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
-import com.nikitakrapo.android.stocks.model.finnhub.NewsArticleCategory
-import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
-import com.nikitakrapo.android.stocks.room.StockMarketDatabase
+import com.nikitakrapo.android.stocks.domain.model.HttpStatusCode
+import com.nikitakrapo.android.stocks.domain.model.NetworkResult
+import com.nikitakrapo.android.stocks.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.network.response.MarketNewsArticle
+import com.nikitakrapo.android.stocks.network.response.NewsArticleCategory
+import com.nikitakrapo.android.stocks.network.response.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.room.NewsCategoriesDao
+import com.nikitakrapo.android.stocks.room.NewsDao
 import java.io.IOException
 
-class NewsRepository private constructor(context: Context){
+class NewsRepository constructor(
+    private val newsDao: NewsDao,
+    private val newsCategoriesDao: NewsCategoriesDao,
+    private val finnhubApiService: FinnhubApiService
+) {
 
-    companion object {
-        private lateinit var stockMarketDatabase: StockMarketDatabase
-        private lateinit var finnhubApiService: FinnhubApiService
-
-        private var repository: NewsRepository? = null
-
-        fun getInstance(context: Context): NewsRepository{
-            if (repository == null){
-                repository = NewsRepository(context)
-                stockMarketDatabase = StockMarketDatabase.getClient(context)
-                finnhubApiService = FinnhubApiService.finnhubApiService
-            }
-            return repository!!
-        }
-    }
-
-    fun addNews(marketNewsArticle: MarketNewsArticle, marketNewsCategory: MarketNewsCategory){
-        stockMarketDatabase.newsDao().addNews(marketNewsArticle)
-        stockMarketDatabase.newsCategoriesDao().addNewsArticleWithCategory(
+    fun addNews(marketNewsArticle: MarketNewsArticle, marketNewsCategory: MarketNewsCategory) {
+        newsDao.addNews(marketNewsArticle)
+        newsCategoriesDao.addNewsArticleWithCategory(
             NewsArticleCategory(marketNewsArticle.id, marketNewsCategory.value)
         )
     }
 
-    fun addNews(marketNewsArticles: List<MarketNewsArticle>, marketNewsCategory: MarketNewsCategory){
-        stockMarketDatabase.newsDao().addNews(marketNewsArticles)
-        stockMarketDatabase.newsCategoriesDao()
+    fun addNews(
+        marketNewsArticles: List<MarketNewsArticle>,
+        marketNewsCategory: MarketNewsCategory
+    ) {
+        newsDao.addNews(marketNewsArticles)
+        newsCategoriesDao
             .addNewsArticleWithCategory(
                 marketNewsArticles.map {
                     NewsArticleCategory(it.id, marketNewsCategory.value)
-                }.toList())
+                }.toList()
+            )
     }
 
-    fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): List<MarketNewsArticle>{
-        val ids = stockMarketDatabase.newsCategoriesDao().getIdsByCategory(marketNewsCategory)
-        return stockMarketDatabase.newsDao().getNewsByIdsOrdered(ids)
+    fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): List<MarketNewsArticle> {
+        val ids = newsCategoriesDao.getIdsByCategory(marketNewsCategory)
+        return newsDao.getNewsByIdsOrdered(ids)
     }
 
-    fun deleteAllNews(){
-        stockMarketDatabase.newsDao().deleteAllNews()
-        stockMarketDatabase.newsCategoriesDao().deleteAllNewsArticleWithCategories()
+    fun deleteAllNews() {
+        newsDao.deleteAllNews()
+        newsCategoriesDao.deleteAllNewsArticleWithCategories()
     }
 
-    fun replaceNews(marketNewsArticles: List<MarketNewsArticle>, marketNewsCategory: MarketNewsCategory){
-        val ids = stockMarketDatabase.newsCategoriesDao().getIdsByCategory(marketNewsCategory)
-        stockMarketDatabase.newsDao().deleteNewsByIds(ids)
-        stockMarketDatabase.newsCategoriesDao().deleteByCategory(marketNewsCategory)
+    fun replaceNews(
+        marketNewsArticles: List<MarketNewsArticle>,
+        marketNewsCategory: MarketNewsCategory
+    ) {
+        val ids = newsCategoriesDao.getIdsByCategory(marketNewsCategory)
+        newsDao.deleteNewsByIds(ids)
+        newsCategoriesDao.deleteByCategory(marketNewsCategory)
         addNews(marketNewsArticles, marketNewsCategory)
     }
 
@@ -79,10 +74,11 @@ class NewsRepository private constructor(context: Context){
         )
     }
 
-    private suspend fun <T : Any> safeApiCall(call: suspend () -> NetworkResult<T>): NetworkResult<T> = try {
-        call.invoke()
-    } catch (e: Exception) {
-        NetworkResult.Error(IOException(e))
-    }
+    private suspend fun <T : Any> safeApiCall(call: suspend () -> NetworkResult<T>): NetworkResult<T> =
+        try {
+            call.invoke()
+        } catch (e: Exception) {
+            NetworkResult.Error(IOException(e))
+        }
 
 }

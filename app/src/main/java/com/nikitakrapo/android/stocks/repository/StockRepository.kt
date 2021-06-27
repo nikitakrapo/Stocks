@@ -1,31 +1,17 @@
 package com.nikitakrapo.android.stocks.repository
 
-import android.content.Context
-import com.nikitakrapo.android.stocks.model.HttpStatusCode
-import com.nikitakrapo.android.stocks.model.NetworkResult
-import com.nikitakrapo.android.stocks.model.finnhub.StockPrice
-import com.nikitakrapo.android.stocks.model.finnhub.SymbolLookup
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
-import com.nikitakrapo.android.stocks.room.StockMarketDatabase
+import com.nikitakrapo.android.stocks.domain.model.HttpStatusCode
+import com.nikitakrapo.android.stocks.domain.model.NetworkResult
+import com.nikitakrapo.android.stocks.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.network.response.StockPrice
+import com.nikitakrapo.android.stocks.network.response.SymbolLookup
+import com.nikitakrapo.android.stocks.room.StockDao
 import java.io.IOException
 
-class StockRepository private constructor(context: Context) {
-
-    companion object {
-        private lateinit var stockMarketDatabase: StockMarketDatabase
-        private lateinit var finnhubApiService: FinnhubApiService
-
-        private var stockRepository: StockRepository? = null
-
-        fun getInstance(context: Context): StockRepository {
-            if (stockRepository == null) {
-                stockRepository = StockRepository(context)
-                stockMarketDatabase = StockMarketDatabase.getClient(context)
-                finnhubApiService = FinnhubApiService.finnhubApiService
-            }
-            return stockRepository!!
-        }
-    }
+class StockRepository constructor(
+    private val stockDao: StockDao,
+    private val finnhubApiService: FinnhubApiService
+) {
 
     suspend fun getStockPriceFromApi(symbol: String) = safeApiCall(
             call = { stockPriceFromApi(symbol) }

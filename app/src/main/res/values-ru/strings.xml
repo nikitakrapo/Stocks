@@ -26,4 +26,5 @@
     <string name="portfolio_name">Название портфеля</string>
     <string name="add">Добавить</string>
     <string name="news_article">Новость</string>
+    <string name="cd_stock_logo">Логотип акции</string>
 </resources>

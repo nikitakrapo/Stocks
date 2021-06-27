@@ -5,31 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle
-import com.nikitakrapo.android.stocks.model.finnhub.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.repository.NewsRepository
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 class NewsDatabaseTest {
 
+    @Inject
     private lateinit var newsRepository: NewsRepository
-
-    @Before
-    fun createDb() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        newsRepository = NewsRepository.getInstance(context)
-    }
 
     @After
     fun clearDb(){

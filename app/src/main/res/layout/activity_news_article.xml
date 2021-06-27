@@ -7,14 +7,14 @@
         <import type="android.view.View"/>
         <variable
             name="article"
-            type="com.nikitakrapo.android.stocks.model.finnhub.MarketNewsArticle" />
+            type="com.nikitakrapo.android.stocks.network.response.MarketNewsArticle" />
 
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.news.NewsArticleActivity">
+        tools:context=".presentation.ui.news.NewsArticleActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"

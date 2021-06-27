@@ -2,8 +2,8 @@ package com.nikitakrapo.android.stocks.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.nikitakrapo.android.stocks.model.Stock
-import com.nikitakrapo.android.stocks.model.StockPortfolio
+import com.nikitakrapo.android.stocks.domain.model.Stock
+import com.nikitakrapo.android.stocks.domain.model.StockPortfolio
 
 @Dao
 interface PortfolioDao {

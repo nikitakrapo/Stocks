@@ -7,14 +7,14 @@
 
         <variable
             name="stockPortfolio"
-            type="com.nikitakrapo.android.stocks.model.StockPortfolio" />
+            type="com.nikitakrapo.android.stocks.domain.model.StockPortfolio" />
 
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.portfolio.PortfolioFragment">
+        tools:context=".presentation.ui.portfolio.PortfolioFragment">
 
         <!-- TODO: Update blank fragment layout -->
         <TextView

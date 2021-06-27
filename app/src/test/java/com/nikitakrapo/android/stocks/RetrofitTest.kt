@@ -1,11 +1,11 @@
 package com.nikitakrapo.android.stocks
 
-import com.nikitakrapo.android.stocks.model.finnhub.enums.StockCandleResolution
-import com.nikitakrapo.android.stocks.retrofit.FinnhubApiService
+import com.nikitakrapo.android.stocks.network.response.enums.StockCandleResolution
+import com.nikitakrapo.android.stocks.network.FinnhubApiService
 import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.*
 import org.junit.Before
 import org.junit.Test
+import javax.inject.Inject
 
 class RetrofitTest {
 
@@ -13,12 +13,8 @@ class RetrofitTest {
         private const val TOO_MANY_REQUESTS = 429
     }
 
+    @Inject
     private lateinit var remoteApi: FinnhubApiService
-
-    @Before
-    fun init(){
-        remoteApi = FinnhubApiService.finnhubApiService
-    }
 
     @Test
     fun tooManyRequests(){

@@ -6,17 +6,18 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".presentation.StocksApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Stocks">
-        <activity android:name=".view.news.NewsArticleActivity" />
+        <activity android:name=".presentation.ui.news.NewsArticleActivity" />
         <activity
-            android:name=".view.search.SearchActivity"
-            android:parentActivityName=".view.MainActivity" />
-        <activity android:name=".view.MainActivity">
+            android:name=".presentation.ui.search.SearchActivity"
+            android:parentActivityName=".presentation.ui.MainActivity" />
+        <activity android:name=".presentation.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
