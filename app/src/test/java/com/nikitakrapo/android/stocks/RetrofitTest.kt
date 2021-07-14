@@ -1,9 +1,8 @@
 package com.nikitakrapo.android.stocks
 
-import com.nikitakrapo.android.stocks.network.response.enums.StockCandleResolution
-import com.nikitakrapo.android.stocks.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.data.network.response.enums.StockCandleResolution
+import com.nikitakrapo.android.stocks.data.network.FinnhubApiService
 import junit.framework.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
 

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.nikitakrapo.android.stocks.domain.model.NetworkResult
-import com.nikitakrapo.android.stocks.network.response.SymbolLookup
-import com.nikitakrapo.android.stocks.repository.StockRepository
+import com.nikitakrapo.android.stocks.data.network.response.SymbolLookup
+import com.nikitakrapo.android.stocks.data.repository.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject

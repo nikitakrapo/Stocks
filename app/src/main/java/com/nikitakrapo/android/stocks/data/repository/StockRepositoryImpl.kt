@@ -1,19 +1,19 @@
-package com.nikitakrapo.android.stocks.repository
+package com.nikitakrapo.android.stocks.data.repository
 
 import com.nikitakrapo.android.stocks.domain.model.HttpStatusCode
 import com.nikitakrapo.android.stocks.domain.model.NetworkResult
-import com.nikitakrapo.android.stocks.network.FinnhubApiService
-import com.nikitakrapo.android.stocks.network.response.StockPrice
-import com.nikitakrapo.android.stocks.network.response.SymbolLookup
-import com.nikitakrapo.android.stocks.room.StockDao
+import com.nikitakrapo.android.stocks.data.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.data.network.response.StockPrice
+import com.nikitakrapo.android.stocks.data.network.response.SymbolLookup
+import com.nikitakrapo.android.stocks.data.cache.room.StockDao
 import java.io.IOException
 
-class StockRepository constructor(
+class StockRepositoryImpl constructor(
     private val stockDao: StockDao,
     private val finnhubApiService: FinnhubApiService
-) {
+) : StockRepository {
 
-    suspend fun getStockPriceFromApi(symbol: String) = safeApiCall(
+    override suspend fun getStockPriceFromApi(symbol: String) = safeApiCall(
             call = { stockPriceFromApi(symbol) }
     )
 
@@ -31,7 +31,7 @@ class StockRepository constructor(
         )
     }
 
-    suspend fun getSymbolLookup(queue: String) = safeApiCall(
+    override suspend fun getSymbolLookup(queue: String) = safeApiCall(
         call = { symbolLookup(queue) }
     )
 

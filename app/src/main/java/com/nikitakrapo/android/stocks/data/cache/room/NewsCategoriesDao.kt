@@ -1,11 +1,11 @@
-package com.nikitakrapo.android.stocks.room
+package com.nikitakrapo.android.stocks.data.cache.room
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nikitakrapo.android.stocks.network.response.NewsArticleCategory
-import com.nikitakrapo.android.stocks.network.response.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.data.network.response.NewsArticleCategory
+import com.nikitakrapo.android.stocks.data.network.response.enums.MarketNewsCategory
 
 @Dao
 interface NewsCategoriesDao {

@@ -1,10 +1,10 @@
-package com.nikitakrapo.android.stocks.room
+package com.nikitakrapo.android.stocks.data.cache.room
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nikitakrapo.android.stocks.network.response.MarketNewsArticle
+import com.nikitakrapo.android.stocks.data.network.response.MarketNewsArticle
 
 @Dao
 interface NewsDao {

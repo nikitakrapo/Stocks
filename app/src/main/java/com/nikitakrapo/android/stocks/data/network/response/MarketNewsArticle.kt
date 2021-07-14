@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.network.response
+package com.nikitakrapo.android.stocks.data.network.response
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

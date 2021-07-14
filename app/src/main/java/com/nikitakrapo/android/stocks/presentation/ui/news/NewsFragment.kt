@@ -9,15 +9,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentNewsBinding
 import com.nikitakrapo.android.stocks.domain.model.NetworkResult
-import com.nikitakrapo.android.stocks.network.response.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.data.network.response.enums.MarketNewsCategory
 import com.nikitakrapo.android.stocks.domain.utils.ConnectionLiveData
 import com.nikitakrapo.android.stocks.domain.utils.ErrorTextUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class NewsFragment : Fragment() {
@@ -27,11 +29,12 @@ class NewsFragment : Fragment() {
 
     private val newsViewModel: NewsViewModel by viewModels()
 
-    private lateinit var recyclerView: RecyclerView
-
     private lateinit var binding: FragmentNewsBinding
 
     private lateinit var marketNewsCategory: MarketNewsCategory
+
+    private val adapter: NewsAdapter
+        get() = binding.recyclerView.adapter as NewsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +47,9 @@ class NewsFragment : Fragment() {
         marketNewsCategory =
             requireArguments().getSerializable(MARKET_NEWS_CATEGORY_ARGS) as MarketNewsCategory
 
+        val adapter = NewsAdapter()
+        binding.recyclerView.adapter = adapter
+
         binding.lifecycleOwner = this
         binding.swipeRefresh.isRefreshing = true
 
@@ -52,11 +58,6 @@ class NewsFragment : Fragment() {
         binding.newsViewModel = newsViewModel
         binding.connectionLiveData = connectionLiveData
         binding.marketNewsCategory = marketNewsCategory
-
-        recyclerView = binding.recyclerView
-
-        val adapter = NewsAdapter()
-        recyclerView.adapter = adapter
 
         observeNews()
         observeConnectionLiveData()
@@ -75,27 +76,35 @@ class NewsFragment : Fragment() {
                 connectionLiveDataInitialized = true
             } else {
                 // Update news when connection obtained
-                if (hasConnection)
+                if (hasConnection) {
                     newsViewModel.refreshNews(marketNewsCategory, hasConnection)
+                    binding.recyclerView.smoothScrollToPosition(0)
+                }
             }
         })
     }
 
     private fun observeNews() {
-        newsViewModel.news[marketNewsCategory]?.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is NetworkResult.Error ->
-                    showShortSnackbar(
-                        ErrorTextUtils.getErrorSnackBarText(
-                            it, requireContext()
-                        )
-                    )
-                is NetworkResult.Success -> {
-                    (recyclerView.adapter as NewsAdapter).submitList(it.data)
-                }
-            }
+        lifecycleScope.launchWhenStarted {
+            newsViewModel.news[marketNewsCategory]!!
+                .onEach { networkResult ->
+                    when (networkResult) {
 
-        })
+                        is NetworkResult.Error ->
+                            showShortSnackbar(
+                                ErrorTextUtils.getErrorSnackBarText(
+                                    networkResult, requireContext()
+                                )
+                            )
+
+                        is NetworkResult.Success -> {
+                            adapter.submitList(networkResult.data)
+                        }
+
+                    }
+                }
+                .collect()
+        }
     }
 
     private fun showShortSnackbar(text: String) {

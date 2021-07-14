@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nikitakrapo.android.stocks.databinding.SearchResultItemBinding
-import com.nikitakrapo.android.stocks.network.response.SymbolLookup.SingleSymbolLookup
+import com.nikitakrapo.android.stocks.data.network.response.SymbolLookup.SingleSymbolLookup
 
 class SearchResultAdapter :
     ListAdapter<SingleSymbolLookup, SearchResultAdapter.SearchResultViewHolder>(DiffCallback()){

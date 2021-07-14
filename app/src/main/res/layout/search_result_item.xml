@@ -8,7 +8,7 @@
 
         <variable
             name="singleSymbolLookup"
-            type="com.nikitakrapo.android.stocks.network.response.SymbolLookup.SingleSymbolLookup" />
+            type="com.nikitakrapo.android.stocks.data.network.response.SymbolLookup.SingleSymbolLookup" />
 
     </data>
 

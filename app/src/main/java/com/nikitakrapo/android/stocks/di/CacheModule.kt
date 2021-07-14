@@ -3,11 +3,9 @@ package com.nikitakrapo.android.stocks.di
 import android.content.Context
 import androidx.room.Room
 import com.google.gson.Gson
-import com.nikitakrapo.android.stocks.network.FinnhubApiService
-import com.nikitakrapo.android.stocks.repository.NewsRepository
-import com.nikitakrapo.android.stocks.repository.PortfolioRepository
-import com.nikitakrapo.android.stocks.repository.StockRepository
-import com.nikitakrapo.android.stocks.room.*
+import com.nikitakrapo.android.stocks.data.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.data.cache.room.*
+import com.nikitakrapo.android.stocks.data.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,7 +67,7 @@ object CacheModule {
         newsCategoriesDao: NewsCategoriesDao,
         finnhubApiService: FinnhubApiService
     ): NewsRepository {
-        return NewsRepository(newsDao, newsCategoriesDao, finnhubApiService)
+        return NewsRepositoryImpl(newsDao, newsCategoriesDao, finnhubApiService)
     }
 
     @Singleton
@@ -78,7 +76,7 @@ object CacheModule {
         portfolioDao: PortfolioDao,
         finnhubApiService: FinnhubApiService
     ): PortfolioRepository {
-        return PortfolioRepository(portfolioDao, finnhubApiService)
+        return PortfolioRepositoryImpl(portfolioDao, finnhubApiService)
     }
 
     @Singleton
@@ -87,7 +85,7 @@ object CacheModule {
         stockDao: StockDao,
         finnhubApiService: FinnhubApiService
     ): StockRepository {
-        return StockRepository(stockDao, finnhubApiService)
+        return StockRepositoryImpl(stockDao, finnhubApiService)
     }
 
 }

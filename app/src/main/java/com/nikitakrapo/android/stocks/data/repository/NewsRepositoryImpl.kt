@@ -1,29 +1,29 @@
-package com.nikitakrapo.android.stocks.repository
+package com.nikitakrapo.android.stocks.data.repository
 
 import com.nikitakrapo.android.stocks.domain.model.HttpStatusCode
 import com.nikitakrapo.android.stocks.domain.model.NetworkResult
-import com.nikitakrapo.android.stocks.network.FinnhubApiService
-import com.nikitakrapo.android.stocks.network.response.MarketNewsArticle
-import com.nikitakrapo.android.stocks.network.response.NewsArticleCategory
-import com.nikitakrapo.android.stocks.network.response.enums.MarketNewsCategory
-import com.nikitakrapo.android.stocks.room.NewsCategoriesDao
-import com.nikitakrapo.android.stocks.room.NewsDao
+import com.nikitakrapo.android.stocks.data.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.data.network.response.MarketNewsArticle
+import com.nikitakrapo.android.stocks.data.network.response.NewsArticleCategory
+import com.nikitakrapo.android.stocks.data.network.response.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.data.cache.room.NewsCategoriesDao
+import com.nikitakrapo.android.stocks.data.cache.room.NewsDao
 import java.io.IOException
 
-class NewsRepository constructor(
+class NewsRepositoryImpl constructor(
     private val newsDao: NewsDao,
     private val newsCategoriesDao: NewsCategoriesDao,
     private val finnhubApiService: FinnhubApiService
-) {
+) : NewsRepository {
 
-    fun addNews(marketNewsArticle: MarketNewsArticle, marketNewsCategory: MarketNewsCategory) {
+    override fun addNews(marketNewsArticle: MarketNewsArticle, marketNewsCategory: MarketNewsCategory) {
         newsDao.addNews(marketNewsArticle)
         newsCategoriesDao.addNewsArticleWithCategory(
             NewsArticleCategory(marketNewsArticle.id, marketNewsCategory.value)
         )
     }
 
-    fun addNews(
+    override fun addNews(
         marketNewsArticles: List<MarketNewsArticle>,
         marketNewsCategory: MarketNewsCategory
     ) {
@@ -36,17 +36,17 @@ class NewsRepository constructor(
             )
     }
 
-    fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): List<MarketNewsArticle> {
+    override fun getNewsByCategory(marketNewsCategory: MarketNewsCategory): List<MarketNewsArticle> {
         val ids = newsCategoriesDao.getIdsByCategory(marketNewsCategory)
         return newsDao.getNewsByIdsOrdered(ids)
     }
 
-    fun deleteAllNews() {
+    override fun deleteAllNews() {
         newsDao.deleteAllNews()
         newsCategoriesDao.deleteAllNewsArticleWithCategories()
     }
 
-    fun replaceNews(
+    override fun replaceNews(
         marketNewsArticles: List<MarketNewsArticle>,
         marketNewsCategory: MarketNewsCategory
     ) {
@@ -56,7 +56,7 @@ class NewsRepository constructor(
         addNews(marketNewsArticles, marketNewsCategory)
     }
 
-    suspend fun getMarketNews(newsCategory: MarketNewsCategory) = safeApiCall(
+    override suspend fun getMarketNews(newsCategory: MarketNewsCategory) = safeApiCall(
         call = { marketNews(newsCategory) }
     )
 

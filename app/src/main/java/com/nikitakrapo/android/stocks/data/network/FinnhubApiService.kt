@@ -1,8 +1,8 @@
-package com.nikitakrapo.android.stocks.network
+package com.nikitakrapo.android.stocks.data.network
 
-import com.nikitakrapo.android.stocks.network.response.*
-import com.nikitakrapo.android.stocks.network.response.enums.MarketNewsCategory
-import com.nikitakrapo.android.stocks.network.response.enums.StockCandleResolution
+import com.nikitakrapo.android.stocks.data.network.response.*
+import com.nikitakrapo.android.stocks.data.network.response.enums.MarketNewsCategory
+import com.nikitakrapo.android.stocks.data.network.response.enums.StockCandleResolution
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
             })
+            setNegativeButton(R.string.cancel) { _, _ -> }
         }
 
         val dialog = builder.create()

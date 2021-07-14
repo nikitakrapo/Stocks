@@ -2,8 +2,8 @@ package com.nikitakrapo.android.stocks.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.nikitakrapo.android.stocks.network.response.CompanyProfile2
-import com.nikitakrapo.android.stocks.network.response.StockPrice
+import com.nikitakrapo.android.stocks.data.network.response.CompanyProfile2
+import com.nikitakrapo.android.stocks.data.network.response.StockPrice
 
 /**
  * Represents a market stock.

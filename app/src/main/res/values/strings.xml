@@ -27,4 +27,5 @@
     <string name="add">Add</string>
     <string name="news_article">News article</string>
     <string name="cd_stock_logo">Stock logo</string>
+    <string name="cancel">Cancel</string>
 </resources>

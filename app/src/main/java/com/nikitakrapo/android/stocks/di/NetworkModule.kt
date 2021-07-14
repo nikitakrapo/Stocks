@@ -1,8 +1,8 @@
 package com.nikitakrapo.android.stocks.di
 
-import com.nikitakrapo.android.stocks.network.ApiKeyInterceptor
-import com.nikitakrapo.android.stocks.network.EnumConverterFactory
-import com.nikitakrapo.android.stocks.network.FinnhubApiService
+import com.nikitakrapo.android.stocks.data.network.ApiKeyInterceptor
+import com.nikitakrapo.android.stocks.data.network.EnumConverterFactory
+import com.nikitakrapo.android.stocks.data.network.FinnhubApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

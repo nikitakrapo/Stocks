@@ -1,16 +1,13 @@
 package com.nikitakrapo.android.stocks
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.nikitakrapo.android.stocks.repository.NewsRepository
+import com.nikitakrapo.android.stocks.data.repository.NewsRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.After
-import org.junit.Before
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -21,7 +18,7 @@ import javax.inject.Inject
 class NewsDatabaseTest {
 
     @Inject
-    private lateinit var newsRepository: NewsRepository
+    private lateinit var newsRepository: NewsRepositoryImpl
 
     @After
     fun clearDb(){

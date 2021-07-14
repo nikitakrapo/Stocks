@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.network
+package com.nikitakrapo.android.stocks.data.network
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.Converter

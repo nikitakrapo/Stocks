@@ -2,8 +2,8 @@ package com.nikitakrapo.android.stocks.presentation.ui.portfolio
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.nikitakrapo.android.stocks.data.repository.PortfolioRepository
 import com.nikitakrapo.android.stocks.domain.model.StockPortfolio
-import com.nikitakrapo.android.stocks.repository.PortfolioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

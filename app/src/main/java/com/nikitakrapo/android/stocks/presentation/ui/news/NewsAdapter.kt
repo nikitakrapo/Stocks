@@ -7,12 +7,13 @@ import android.content.Intent
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.NewsArticleItemBinding
-import com.nikitakrapo.android.stocks.network.response.MarketNewsArticle
+import com.nikitakrapo.android.stocks.data.network.response.MarketNewsArticle
 
 class NewsAdapter :
     ListAdapter<MarketNewsArticle, NewsAdapter.NewsViewHolder>(DiffCallback()) {

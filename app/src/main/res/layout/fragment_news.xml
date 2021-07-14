@@ -6,7 +6,7 @@
 
         <variable
             name="marketNewsCategory"
-            type="com.nikitakrapo.android.stocks.network.response.enums.MarketNewsCategory" />
+            type="com.nikitakrapo.android.stocks.data.network.response.enums.MarketNewsCategory" />
 
         <variable
             name="newsViewModel"

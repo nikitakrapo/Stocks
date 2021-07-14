@@ -1,9 +1,9 @@
-package com.nikitakrapo.android.stocks.room
+package com.nikitakrapo.android.stocks.data.cache.room
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.nikitakrapo.android.stocks.network.response.CompanyProfile2
-import com.nikitakrapo.android.stocks.network.response.StockPrice
+import com.nikitakrapo.android.stocks.data.network.response.CompanyProfile2
+import com.nikitakrapo.android.stocks.data.network.response.StockPrice
 import javax.inject.Inject
 
 class Converters {

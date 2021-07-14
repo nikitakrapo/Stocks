@@ -14,7 +14,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.FragmentPortfolioContainerBinding
 import com.nikitakrapo.android.stocks.domain.model.StockPortfolio
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PortfolioContainerFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2

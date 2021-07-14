@@ -1,12 +1,10 @@
 package com.nikitakrapo.android.stocks
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nikitakrapo.android.stocks.domain.model.StockPortfolio
-import com.nikitakrapo.android.stocks.repository.PortfolioRepository
+import com.nikitakrapo.android.stocks.data.repository.PortfolioRepositoryImpl
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,7 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
-import org.junit.Before
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -27,7 +24,7 @@ import javax.inject.Inject
 class PortfolioDatabaseTest {
 
     @Inject
-    private lateinit var portfolioRepository: PortfolioRepository
+    private lateinit var portfolioRepository: PortfolioRepositoryImpl
 
     // Also testing converter list<String> <-> String (json)
     @Test

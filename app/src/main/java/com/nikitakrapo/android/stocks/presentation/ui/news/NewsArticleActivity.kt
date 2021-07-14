@@ -8,7 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.nikitakrapo.android.stocks.R
 import com.nikitakrapo.android.stocks.databinding.ActivityNewsArticleBinding
-import com.nikitakrapo.android.stocks.network.response.MarketNewsArticle
+import com.nikitakrapo.android.stocks.data.network.response.MarketNewsArticle
 
 class NewsArticleActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.network.response.enums
+package com.nikitakrapo.android.stocks.data.network.response.enums
 
 import com.google.gson.annotations.SerializedName
 

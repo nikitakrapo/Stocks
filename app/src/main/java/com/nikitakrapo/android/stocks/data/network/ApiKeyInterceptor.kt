@@ -1,6 +1,6 @@
 @file:Suppress("unused", "unused")
 
-package com.nikitakrapo.android.stocks.network
+package com.nikitakrapo.android.stocks.data.network
 
 import okhttp3.Interceptor
 import okhttp3.Response

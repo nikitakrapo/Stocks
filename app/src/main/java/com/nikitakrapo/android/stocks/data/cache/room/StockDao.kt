@@ -1,4 +1,4 @@
-package com.nikitakrapo.android.stocks.room
+package com.nikitakrapo.android.stocks.data.cache.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

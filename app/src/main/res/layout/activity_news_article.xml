@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="article"
-            type="com.nikitakrapo.android.stocks.network.response.MarketNewsArticle" />
+            type="com.nikitakrapo.android.stocks.data.network.response.MarketNewsArticle" />
 
     </data>
 
