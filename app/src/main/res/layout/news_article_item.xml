@@ -38,6 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:imageUrl="@{article.image}"
+            android:contentDescription="@string/cd_article_image"
             android:transitionName="@string/shared_news_article_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
