@@ -9,6 +9,7 @@ class ApiKeyInterceptor: Interceptor {
 
     companion object{
         private const val TAG = "ApiKeyInterceptor"
+        //TODO: move api key out of code (Android KeyStore for example)
         private const val API_KEY = "c0vnvnn48v6t383llfgg"
     }
 
